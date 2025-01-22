@@ -26,7 +26,6 @@ import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.MailOutline
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Warning
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -121,7 +120,6 @@ fun PaletteScreen(activity: MainActivity){
                     }
                 }
         }
-        HorizontalDivider(thickness = barsThickness)
         TitleText("Examples", maxW)
 
         val user = DUser(name = "Dummy" + (Math.random() * 100).toInt())
