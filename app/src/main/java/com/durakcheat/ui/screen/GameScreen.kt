@@ -36,7 +36,6 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -81,7 +80,6 @@ import com.durakcheat.ui.stackableBorder
 import com.durakcheat.ui.thenIf
 
 val avatarSize = 70.dp
-val barsThickness = 4.dp
 
 @OptIn(ExperimentalLayoutApi::class, ExperimentalFoundationApi::class)
 @Composable
@@ -193,7 +191,6 @@ fun GameScreen(activity: MainActivity){
 
     Column(Modifier.fillMaxWidth()) {
         GameRulesRow(game.pos.info)
-        HorizontalDivider(thickness = barsThickness)
         Row(modifier = Modifier.weight(1f)) {
             // User avatars column
             Column(
@@ -315,7 +312,6 @@ fun GameScreen(activity: MainActivity){
                     }
                 })
             }
-            VerticalDivider(thickness = barsThickness)
             // Gameplay column
             Column(Modifier.fillMaxSize()) {
                 Rov(modifier = Modifier.align(Alignment.CenterHorizontally)) {
@@ -341,7 +337,6 @@ fun GameScreen(activity: MainActivity){
                     Text(stringResource(R.string.unseen_cards).lowercase())
                 }
 
-                HorizontalDivider(thickness = barsThickness)
                 // Board
                 Watcher({ game.pos.board.size }, { sNew, sOld ->
                     if(sNew > sOld) soundCardPlace()
@@ -431,7 +426,6 @@ fun GameScreen(activity: MainActivity){
                 }
             }
         }
-        HorizontalDivider(thickness = barsThickness)
         // My cards
         FlowRow(
             horizontalArrangement = Arrangement.SpaceAround,
@@ -469,8 +463,6 @@ fun GameScreen(activity: MainActivity){
                 )
             }
         }
-        if(game.pos.hand.isNotEmpty())
-            HorizontalDivider(thickness = barsThickness)
         // Bottom action bar
         Rov(Modifier.height(IntrinsicSize.Min)) {
             Text(game.clientPlayer.mode.name)
@@ -506,7 +498,6 @@ fun GameScreen(activity: MainActivity){
                         Text(stringResource(R.string.unlock))
                     }
             }
-            VerticalDivider(thickness = barsThickness)
             ButtonTextOnly(text = stringResource(R.string.smile), onClick = emojiDlgOpener)
         }
     }
