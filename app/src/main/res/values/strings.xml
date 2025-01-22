@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Durak Cheat</string>
+    <string name="load_servers">Fetching servers list</string>
+    <string name="initializing">Initializing</string>
+    <string name="connecting">Connecting</string>
+    <string name="logging_in">Logging in</string>
+    <string name="dlg_text_surrender">In order to exit right now, you need to surrender.</string>
+    <string name="bet">Bet</string>
+    <string name="players">Players</string>
+    <string name="deck">Card deck</string>
+    <string name="game_rules">Game rules</string>
+    <string name="smile">Smiles</string>
+    <string name="user_avatar">User avatar</string>
+    <string name="empty_board">The board is empty</string>
+    <string name="to_surrender">Surrender</string>
+    <string name="cancel">Cancel</string>
+    <string name="player_s_cards">Player\'s cards</string>
+    <string name="total">Total</string>
+    <string name="unknown_cards">Unknown cards</string>
+    <string name="known_cards">Known cards</string>
+    <string name="to_apply">Apply</string>
+    <string name="a_filter">Filter</string>
+    <string name="deck_left">Deck left</string>
+    <string name="no_games_found">No games were found</string>
+    <string name="no_game_invites">No game invitations received</string>
+    <string name="no_accounts">No accounts</string>
+    <string name="new_message">New message!</string>
+    <string name="delete">Delete</string>
+    <string name="ok">OK</string>
+    <string name="rejoin_failed">Failed to rejoin</string>
+    <string name="error">Error</string>
+    <string name="delete_confirm">Confirm deletion</string>
+    <string name="dlg_body_friend_delete">Do you really wish to remove the user from the friend list?</string>
+    <string name="dlg_body_token_delete">Do you really wish to forget this token?</string>
+    <string name="find_players">Find players</string>
+    <string name="empty_users_list">No players found</string>
+    <string name="empty_chat">No messages</string>
+    <string name="unseen_cards">Not yet seen cards</string>
+    <string name="game_invitations">Game invitations</string>
+    <string name="dlg_body_friend_ignore">Do you really wish to ignore the user\'s friend requests (forever)?</string>
+    <string name="unlock">Unlock</string>
+</resources>
