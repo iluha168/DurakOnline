@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateMapOf
@@ -22,12 +21,9 @@ import com.durakcheat.R
 import com.durakcheat.net.packet.DUserInfoPersonal
 import com.durakcheat.ui.component.container.EmptySpaceFillerText
 import com.durakcheat.ui.component.container.LazyListColumn
-import com.durakcheat.ui.component.container.Rov
-import com.durakcheat.ui.component.leaf.ButtonDelete
+import com.durakcheat.ui.component.highlevel.ListElementToken
 import com.durakcheat.ui.component.leaf.ButtonIconOnly
 import com.durakcheat.ui.component.leaf.InputLineField
-import com.durakcheat.ui.component.leaf.ThickButton
-import com.durakcheat.ui.component.leaf.UserAvatarIcon
 import com.durakcheat.ui.dialog.confirmationDialog
 import kotlinx.coroutines.launch
 
@@ -71,27 +67,15 @@ fun ChooseAccountScreen(activity: MainActivity, tokens: MutableList<String>, onC
             placeholder = { EmptySpaceFillerText(R.string.no_accounts) },
             modifier = Modifier.weight(1f)
         ) {
-            ThickButton(
-                onClick = { onChoice(it.key) },
+            ListElementToken(
                 modifier = Modifier
                     .fillMaxWidth()
                     .animateItemPlacement(),
-                slim = true,
-            ) {
-                Rov(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    UserAvatarIcon(it.value, nav = null, 70.dp)
-                    Text(
-                        text = it.value.name,
-                        modifier = Modifier.weight(1f)
-                    )
-                    ButtonIconOnly(R.drawable.copy, stringResource(R.string.to_copy)) {
-                        clipboard.setText(AnnotatedString(it.key))
-                    }
-                    ButtonDelete {
-                        tokenDeleteDlgOpener(it.key)
-                    }
-                }
-            }
+                onClick = { onChoice(it.key) },
+                onCopy = { clipboard.setText(AnnotatedString(it.key)) },
+                onDelete = { tokenDeleteDlgOpener(it.key) },
+                user = it.value
+            )
         }
         HorizontalDivider()
         Row {
