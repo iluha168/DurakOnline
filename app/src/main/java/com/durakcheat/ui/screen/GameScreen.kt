@@ -24,14 +24,12 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -65,6 +63,7 @@ import com.durakcheat.ui.component.container.Rov
 import com.durakcheat.ui.component.container.columnDialog
 import com.durakcheat.ui.component.container.lazyColumnDialog
 import com.durakcheat.ui.component.highlevel.ButtonHand
+import com.durakcheat.ui.component.highlevel.ButtonHandShare
 import com.durakcheat.ui.component.highlevel.playerCardsBreakdown
 import com.durakcheat.ui.component.leaf.ButtonTextOnly
 import com.durakcheat.ui.component.leaf.CardShape
@@ -254,16 +253,10 @@ fun GameScreen(activity: MainActivity){
                             if(game.started && friend?.kind == DFriendListEntryType.FRIEND) {
                                 var lastSharedHand by remember { mutableIntStateOf(0) }
                                 val handHash = game.pos.hand.toTypedArray().contentHashCode()
-                                ThickButton(
-                                    onClick = {
-                                        game.friendShareHand(friend)
-                                        lastSharedHand = handHash
-                                    },
-                                    enabled = lastSharedHand != handHash,
-                                    content = { Icon(Icons.Default.Share, stringResource(R.string.share_hand)) },
-                                    slim = true, shape = RoundedCornerShape(10.dp),
-                                    modifier = Modifier.width(40.dp)
-                                )
+                                ButtonHandShare(lastSharedHand != handHash) {
+                                    game.friendShareHand(friend)
+                                    lastSharedHand = handHash
+                                }
                             }
                         }
                         // Status indicators
