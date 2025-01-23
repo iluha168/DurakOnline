@@ -43,7 +43,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.durakcheat.MainActivity
 import com.durakcheat.R
 import com.durakcheat.net.json.DCard
@@ -59,6 +58,7 @@ import com.durakcheat.ui.animatePlacement
 import com.durakcheat.ui.component.container.RememberingAnimatedVisibility
 import com.durakcheat.ui.component.container.Rov
 import com.durakcheat.ui.component.container.TitleText
+import com.durakcheat.ui.component.highlevel.ButtonHand
 import com.durakcheat.ui.component.highlevel.ButtonQuickGame
 import com.durakcheat.ui.component.highlevel.ListElementToken
 import com.durakcheat.ui.component.leaf.CardShape
@@ -143,13 +143,7 @@ fun PaletteScreen(activity: MainActivity){
                     3 -> LinearProgressIndicator(color = Color.Unspecified)
                 }
             }
-            ThickButton(
-                onClick = openers[2],
-                content = { TextCounter((Math.random() * 15).toInt(), 26.sp, isInText = false) },
-                color = MaterialTheme.colorScheme.tertiary,
-                slim = true, shape = RoundedCornerShape(10.dp),
-                modifier = Modifier.width(40.dp)
-            )
+            ButtonHand(Math.random().times(15.0).toInt(), openers[2])
             ThickButton(
                 onClick = openers[4],
                 content = { Icon(Icons.Default.Share, stringResource(R.string.share_hand)) },
