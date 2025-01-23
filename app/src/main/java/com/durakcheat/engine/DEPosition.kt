@@ -210,13 +210,13 @@ data class DEPosition(
     fun playersPossibleCards() = info.deck.cards()
         .toMutableList()
         .apply {
-            removeAll(deckDiscarded)
+            removeAll(deckDiscarded.toSet())
             for(stack in board){
                 remove(stack.first)
                 if(stack.second != null)
                     remove(stack.second!!)
             }
-            for(p in players) removeAll(p.cards.filterNotNull())
+            for(p in players) removeAll(p.cards.filterNotNull().toSet())
             if(deckLeft > 0) remove(trump)
         }
 

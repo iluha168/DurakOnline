@@ -32,6 +32,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.durakcheat.ui.shadow
 import com.durakcheat.ui.theme.times
@@ -111,7 +112,7 @@ fun ThickButton(
                         }
                     }
                 )
-                .offset(y = -pressOffset)
+                .offset { IntOffset(0, -pressOffset.roundToPx()) }
                 .fillMaxSize(),
             contentPadding = paddingValues,
             content = content

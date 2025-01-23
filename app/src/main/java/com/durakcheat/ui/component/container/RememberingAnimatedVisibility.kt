@@ -1,7 +1,6 @@
 package com.durakcheat.ui.component.container
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.shrinkHorizontally
@@ -15,7 +14,6 @@ import androidx.compose.runtime.setValue
  * Displays [content], until [condition] becomes false.
  * Then displays [content] using the last remembered [value] at the time of [condition] == true, for [delay] milliseconds.
  * */
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun <T> RememberingAnimatedVisibility(
     value: T,
