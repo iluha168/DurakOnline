@@ -59,13 +59,13 @@ import com.durakcheat.ui.animatePlacement
 import com.durakcheat.ui.component.container.RememberingAnimatedVisibility
 import com.durakcheat.ui.component.container.Rov
 import com.durakcheat.ui.component.container.TitleText
+import com.durakcheat.ui.component.highlevel.ButtonQuickGame
 import com.durakcheat.ui.component.leaf.ButtonDelete
 import com.durakcheat.ui.component.leaf.ButtonIconOnly
 import com.durakcheat.ui.component.leaf.CardShape
 import com.durakcheat.ui.component.leaf.CashDisplay
 import com.durakcheat.ui.component.leaf.DCardDisplay
 import com.durakcheat.ui.component.leaf.NamedTextCounterRow
-import com.durakcheat.ui.component.leaf.PlayButton
 import com.durakcheat.ui.component.leaf.TextCounter
 import com.durakcheat.ui.component.leaf.ThickButton
 import com.durakcheat.ui.component.leaf.TransparentButtonIcon
@@ -131,7 +131,7 @@ fun PaletteScreen(activity: MainActivity){
         )
         val trumpSuit = DCardSuit.entries.random()
 
-        PlayButton(stringResource(R.string.quick_game), maxW, onClick = openers[0])
+        ButtonQuickGame(maxW, openers[0])
 
         ThickButton(
             onClick = openers[4],

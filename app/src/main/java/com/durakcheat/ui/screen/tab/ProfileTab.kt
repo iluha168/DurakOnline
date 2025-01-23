@@ -20,6 +20,7 @@ import com.durakcheat.ui.component.container.EmptySpaceFillerText
 import com.durakcheat.ui.component.container.LazyListColumn
 import com.durakcheat.ui.component.container.TitleText
 import com.durakcheat.ui.component.container.columnDialog
+import com.durakcheat.ui.component.highlevel.ButtonQuickGame
 import com.durakcheat.ui.component.leaf.ButtonDelete
 import com.durakcheat.ui.component.leaf.CashDisplay
 import com.durakcheat.ui.component.leaf.CoinsDisplay
@@ -32,7 +33,7 @@ fun ProfileTab(activity: MainActivity){
 
     val rejoinFailedDlgOpener = columnDialog(
         title = stringResource(R.string.error),
-        content = { -> Text(stringResource(R.string.rejoin_failed)) }
+        content = { Text(stringResource(R.string.rejoin_failed)) }
     )
 
     TitleText(stringResource(R.string.profile), Modifier.fillMaxWidth())
@@ -55,9 +56,7 @@ fun ProfileTab(activity: MainActivity){
     HorizontalDivider()
     with(activity.client){
         Column(Modifier.animateContentSize()) {
-            PlayButton(stringResource(R.string.quick_game), Modifier.fillMaxWidth()) {
-                gameQuickStart()
-            }
+            ButtonQuickGame(Modifier.fillMaxWidth(), ::gameQuickStart)
             lastGame.value?.let {
                 PlayButton(stringResource(R.string.rejoin_try), Modifier.fillMaxWidth()) {
                     rejoinGame(it, failed = {
