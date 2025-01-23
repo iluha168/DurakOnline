@@ -19,14 +19,14 @@ import com.durakcheat.ui.thenIf
 val CardShape = RectangleShape
 
 @Composable
-fun DCardDisplay(card: DCard, modifier: Modifier = Modifier, trumpSuit: DCardSuit, small: Boolean = false){
+fun DCardDisplay(card: DCard?, modifier: Modifier = Modifier, trumpSuit: DCardSuit?, small: Boolean = false){
     Text(
-        text = card.toString(),
+        text = card?.toString() ?: "??",
         fontSize = if(small) 20.sp else 28.sp,
         modifier = Modifier
             .padding(if (small) 2.dp else 5.dp)
             .then(modifier)
-            .thenIf(card.suit == trumpSuit,
+            .thenIf( card != null && card.suit == trumpSuit,
                 Modifier.border(
                     if (small) 0.8.dp else 1.5.dp,
                     MaterialTheme.colorScheme.error, CardShape
@@ -44,5 +44,15 @@ fun DCardDisplay(cards: Iterable<DCard>, modifier: Modifier = Modifier, trumpSui
     FlowRow(modifier = modifier) {
         for(card in cards.sorted())
             DCardDisplay(card = card, trumpSuit = trumpSuit, small = true)
+    }
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+fun DCardDisplay(cards: Int, modifier: Modifier = Modifier){
+    FlowRow(modifier = modifier) {
+        repeat(cards) {
+            DCardDisplay(card = null, trumpSuit = null, small = true)
+        }
     }
 }
