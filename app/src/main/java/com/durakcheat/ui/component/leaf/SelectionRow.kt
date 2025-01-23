@@ -17,8 +17,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import com.durakcheat.R
 import com.durakcheat.net.packet.booleans
 import com.durakcheat.ui.component.container.Rov
 import com.durakcheat.ui.shadow
@@ -82,9 +84,9 @@ fun <T> MultiSelectionRow(choices: Iterable<T>, selection: MutableList<T>, modif
             ) {
                 item(choice)
                 if(isSelected)
-                    Icon(Icons.Default.Check, "Selected")
+                    Icon(Icons.Default.Check, stringResource(R.string.selected_true))
                 else
-                    Icon(Icons.Default.Clear, "Unselected")
+                    Icon(Icons.Default.Clear, stringResource(R.string.selected_false))
             }
         }
     }

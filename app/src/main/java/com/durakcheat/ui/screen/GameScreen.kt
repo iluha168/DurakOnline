@@ -114,16 +114,16 @@ fun GameScreen(activity: MainActivity){
         }
     }
 
-    val cardsOfPlayerDlgOpener = lazyColumnDialog<Int>(title = stringResource(R.string.player_s_cards)) { i ->
+    val cardsOfPlayerDlgOpener = lazyColumnDialog<Int>(title = stringResource(R.string.cards_of_player)) { i ->
         val cards = game.pos.players[i].cards
         val knownCards = cards.filterNotNull()
         stickyHeader { NamedTextCounterRow(R.string.total, cards.size) }
-        stickyHeader { NamedTextCounterRow(R.string.unknown_cards, cards.size - knownCards.size) }
-        stickyHeader { NamedTextCounterRow(R.string.known_cards, knownCards.size) }
+        stickyHeader { NamedTextCounterRow(R.string.cards_unknown, cards.size - knownCards.size) }
+        stickyHeader { NamedTextCounterRow(R.string.cards_known, knownCards.size) }
         item { DCardDisplay(cards = knownCards, trumpSuit = trumpSuit) }
     }
 
-    val inviteFriendsDlgOpener = columnDialog(title = "Invite friends") {
+    val inviteFriendsDlgOpener = columnDialog(title = stringResource(R.string.dlg_title_friend_invite)) {
         val acceptedFriends = game.client.friends.entries.filter { it.value.raw.kind == DFriendListEntryType.FRIEND }
         LazyVerticalGrid(
             columns = GridCells.Adaptive(90.dp),
@@ -166,26 +166,26 @@ fun GameScreen(activity: MainActivity){
         }
     }
 
-    val discardedCardsDlgOpener = columnDialog(title = "Discarded cards") {
+    val discardedCardsDlgOpener = columnDialog(title = stringResource(R.string.cards_discarded)) {
         val unknownAmount = game.pos.deckDiscardedAmount - game.pos.deckDiscarded.size
         if(unknownAmount <= 0)
-            Text( "All discarded cards are known!")
+            Text(stringResource(R.string.cards_discarded_known_all))
         else Row {
-            Text("Warning!")
+            Text(stringResource(R.string.warning))
             TextCounter(unknownAmount)
-            Text("discarded cards are not known.")
+            Text(stringResource(R.string.cards_discarded_known_not).lowercase())
         }
         HorizontalDivider()
         DCardDisplay(cards = game.pos.deckDiscarded, trumpSuit = trumpSuit)
     }
 
-    val unseenCardsDlgOpener = columnDialog(title = stringResource(R.string.unseen_cards)) {
+    val unseenCardsDlgOpener = columnDialog(title = stringResource(R.string.cards_unseen)) {
         DCardDisplay(cards = unseenCardsCache, trumpSuit = trumpSuit)
     }
 
     val openRoomDlgOpener = confirmationDialog<Unit>(
         titleText = R.string.unlock,
-        bodyText = "Do you really wish to open the room? Password: "+game.pos.info.password,
+        bodyText = stringResource(R.string.dlg_body_room_unlock, game.pos.info.password ?: ""),
         onConfirm = { game.publish() }
     )
 
@@ -267,7 +267,7 @@ fun GameScreen(activity: MainActivity){
                                         lastSharedHand = handHash
                                     },
                                     enabled = lastSharedHand != handHash,
-                                    content = { Icon(Icons.Default.Share, "Share hand") },
+                                    content = { Icon(Icons.Default.Share, stringResource(R.string.share_hand)) },
                                     slim = true, shape = RoundedCornerShape(10.dp),
                                     modifier = Modifier.width(40.dp)
                                 )
@@ -279,17 +279,17 @@ fun GameScreen(activity: MainActivity){
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             if(playerSocial.ready)
-                                Icon(Icons.Default.Check, "Ready")
+                                Icon(Icons.Default.Check, stringResource(R.string.is_ready))
                             if(!game.started)
                                 ThickButton(
                                     onClick = { game.swap(playerIndex) },
                                     slim = true, shape = CircleShape,
                                     color = if(playerSocial.wantsToSwap) MaterialTheme.colorScheme.primary else null,
-                                    content = { Icon(painterResource(R.drawable.swap), "Swap") },
+                                    content = { Icon(painterResource(R.drawable.swap), stringResource(R.string.to_swap)) },
                                     modifier = Modifier.width(40.dp)
                                 )
                             if(playerSocial.disconnected)
-                                Icon(Icons.Default.Build, "Disconnected")
+                                Icon(Icons.Default.Build, stringResource(R.string.disconnected))
                             // Cash won/lost
                             RememberingAnimatedVisibility(
                                 value = game.players[playerIndex].winAmount,
@@ -301,7 +301,7 @@ fun GameScreen(activity: MainActivity){
                     }
                 }
                 if(!game.started)
-                    Icon(Icons.Default.Add, "Invite", modifier = Modifier
+                    Icon(Icons.Default.Add, stringResource(R.string.dlg_title_friend_invite), modifier = Modifier
                         .clickable(onClick = inviteFriendsDlgOpener)
                         .size(avatarSize)
                     )
@@ -323,18 +323,18 @@ fun GameScreen(activity: MainActivity){
                     onClick = discardedCardsDlgOpener,
                     color = MaterialTheme.colorScheme.secondary
                 ){
-                    Text("See")
+                    Text(stringResource(R.string.to_check))
                     TextCounter(game.pos.deckDiscardedAmount)
-                    Text("discarded cards")
+                    Text(stringResource(R.string.cards_discarded).lowercase())
                 }
                 ThickButton(
                     modifier = Modifier.fillMaxWidth(),
                     onClick = unseenCardsDlgOpener,
                     color = MaterialTheme.colorScheme.secondary
                 ){
-                    Text("See")
+                    Text(stringResource(R.string.to_check))
                     TextCounter(unseenCardsCache.size)
-                    Text(stringResource(R.string.unseen_cards).lowercase())
+                    Text(stringResource(R.string.cards_unseen).lowercase())
                 }
 
                 // Board
@@ -380,7 +380,7 @@ fun GameScreen(activity: MainActivity){
                         for(card in game.pos.hand.filterNotNull())
                             if(game.canSkipAround(card))
                                 ThickButton(onClick = { game.passCard(card) }) {
-                                    Icon(Icons.Default.Refresh, "Pass to next")
+                                    Icon(Icons.Default.Refresh, stringResource(R.string.move_pass_to_next))
                                     DCardDisplay(card, trumpSuit = trumpSuit, small = true)
                                 }
                     // Placeholder
@@ -418,7 +418,7 @@ fun GameScreen(activity: MainActivity){
                                     color = MaterialTheme.colorScheme.secondary,
                                     modifier = Modifier.fillMaxWidth()
                                 ) {
-                                    Text("Place")
+                                    Text(stringResource(R.string.to_place))
                                     DCardDisplay(cards = suggestion, trumpSuit = trumpSuit)
                                 }
                         }
@@ -473,22 +473,22 @@ fun GameScreen(activity: MainActivity){
             ) {
                 val actionBtn =
                     if(game.btnReadyOn && !game.players[game.myPosition].ready) {
-                        "Ready" to { game.ready() }
+                        R.string.is_ready to { game.ready() }
                     }
                     else when(game.clientPlayer.mode){
                         DPlayerMode.THROW_IN_TAKE ->
-                            "Pass" to { game.pass() }
+                            R.string.move_pass to { game.pass() }
                         DPlayerMode.PLACE ->
                             if(game.pos.board.isEmpty()) null
-                            else "Done" to { game.done() }
+                            else R.string.move_done to { game.done() }
                         DPlayerMode.CONFIRM ->
-                            "Confirm" to { game.confirmTake() }
+                            R.string.move_confirm to { game.confirmTake() }
                         DPlayerMode.BEAT ->
-                            "Take" to { game.take() }
+                            R.string.move_take to { game.take() }
                         else -> null
                 }
                 if(actionBtn != null)
-                    ButtonTextOnly(text = actionBtn.first) {
+                    ButtonTextOnly(text = stringResource(actionBtn.first)) {
                         actionBtn.second()
                         activity.playSound(R.raw.btn)
                     }

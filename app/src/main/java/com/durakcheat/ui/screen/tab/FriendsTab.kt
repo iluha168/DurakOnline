@@ -63,14 +63,14 @@ fun FriendsTab(activity: MainActivity){
             transitionSpec = { fadeIn() togetherWith fadeOut() }
         ) { state ->
             if(state)
-                InputLineField("Enter a nickname...", autoClear = false) {
+                InputLineField(stringResource(R.string.placeholder_user_search), autoClear = false) {
                     searchResults = activity.client.findUsers(it)
                 }
             else
-                TitleText("Friends")
+                TitleText(stringResource(R.string.friends))
         }
 
-        TransparentButtonIcon(Icons.Default.Add, stringResource(R.string.find_players),
+        TransparentButtonIcon(Icons.Default.Add, stringResource(R.string.find_users),
             Modifier.rotate(
                 animateFloatAsState(if(searchModeEnabled) 45f else 0f, label = "Button rotation").value
             )
@@ -125,8 +125,8 @@ fun FriendsTab(activity: MainActivity){
                         overflow = TextOverflow.Ellipsis,
                     )
                     Text(when(friend.raw.kind){
-                        DFriendListEntryType.REQUEST -> "Outgoing friend request"
-                        DFriendListEntryType.INVITE -> "Incoming friend request"
+                        DFriendListEntryType.REQUEST -> stringResource(R.string.user_friend_request_outbound)
+                        DFriendListEntryType.INVITE -> stringResource(R.string.user_friend_request_inbound)
                         else -> ""
                     })
                 }
@@ -135,29 +135,29 @@ fun FriendsTab(activity: MainActivity){
                 ) {
                     when(friend.raw.kind){
                         DFriendListEntryType.INVITE -> {
-                            TransparentButtonIcon(Icons.Default.Check, "Accept") {
+                            TransparentButtonIcon(Icons.Default.Check, stringResource(R.string.to_accept)) {
                                 activity.client.friendRequestAccept(friend.raw)
                                 friend.stateNew = false
                             }
-                            TransparentButtonIcon(Icons.Default.Clear, "Decline") {
+                            TransparentButtonIcon(Icons.Default.Clear, stringResource(R.string.to_decline)) {
                                 activity.client.friendRequestDecline(friend.raw)
                             }
-                            TransparentButtonIcon(Icons.Default.Warning, "Never") {
+                            TransparentButtonIcon(Icons.Default.Warning, stringResource(R.string.to_decline_always)) {
                                 ignoreDlgOpener(friend.raw)
                             }
                         }
                         DFriendListEntryType.FRIEND -> {
-                            TransparentButtonIcon(Icons.Default.Clear, "Remove") {
+                            TransparentButtonIcon(Icons.Default.Clear, stringResource(R.string.delete)) {
                                 deleteDlgOpener(friend.raw)
                             }
-                            TransparentButtonIcon(Icons.Default.MailOutline, "Chat", onClick = openChat)
+                            TransparentButtonIcon(Icons.Default.MailOutline, stringResource(R.string.user_chat_open), onClick = openChat)
                         }
                         DFriendListEntryType.REQUEST ->
-                            TransparentButtonIcon(Icons.Default.Clear, "Cancel request") {
+                            TransparentButtonIcon(Icons.Default.Clear, stringResource(R.string.to_decline)) {
                                 deleteDlgOpener(friend.raw)
                             }
                         DFriendListEntryType.NOBODY ->
-                            TransparentButtonIcon(Icons.Default.Add, "Send request") {
+                            TransparentButtonIcon(Icons.Default.Add, stringResource(R.string.user_friend_request_send)) {
                                 activity.client.friendRequestSend(friend.raw.user)
                             }
                     }

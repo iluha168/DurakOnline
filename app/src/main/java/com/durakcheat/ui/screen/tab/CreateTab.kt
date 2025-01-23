@@ -65,7 +65,7 @@ fun ColumnScope.CreateTab(activity: MainActivity){
     val hasDraw = remember { mutableStateOf(defaults.dr == true) }
     val isEnoughBalance = activity.client.balance >= bet
 
-    TitleText("Create a game", Modifier.fillMaxWidth())
+    TitleText(stringResource(R.string.create_game), Modifier.fillMaxWidth())
     Text(stringResource(R.string.bet))
     CashDisplay(bet, color = if (isEnoughBalance) null else MaterialTheme.colorScheme.error)
     ListSlider(list = bets, value = bet, modifier = Modifier.fillMaxWidth()) { bet = it }
@@ -89,11 +89,11 @@ fun ColumnScope.CreateTab(activity: MainActivity){
         IconBooleanSelection(ico0 = R.drawable.ico_end_draw, ico1 = R.drawable.ico_end_classic, b = hasDraw)
     }
 
-    Text("Password")
+    Text(stringResource(R.string.password))
     // Rov inside a column because we do not want the password field to take up space when unnecessary
     Column(Modifier.weight(1f)) {
         Rov {
-            Icon(painterResource(R.drawable.ico_lock), "Lock")
+            Icon(painterResource(R.drawable.ico_lock), stringResource(R.string.lock))
             TextField(
                 value = password,
                 onValueChange = { password = it },
@@ -105,7 +105,7 @@ fun ColumnScope.CreateTab(activity: MainActivity){
     }
 
     PlayButton(
-        text = "Create game",
+        text = stringResource(R.string.ok),
         modifier = Modifier.fillMaxWidth(),
         enabled = (isNeighboursOnly.value == (playersCount <= 3)) && (playersCount*6 <= deck.size) && isEnoughBalance
     ) {

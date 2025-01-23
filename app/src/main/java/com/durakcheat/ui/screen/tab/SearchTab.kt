@@ -31,6 +31,7 @@ import com.durakcheat.net.packet.DLookupStartOptions
 import com.durakcheat.net.packet.booleans
 import com.durakcheat.ui.component.container.EmptySpaceFillerText
 import com.durakcheat.ui.component.container.LazyListColumn
+import com.durakcheat.ui.component.container.Rov
 import com.durakcheat.ui.component.container.TitleText
 import com.durakcheat.ui.component.container.columnDialog
 import com.durakcheat.ui.component.leaf.ButtonTextOnly
@@ -38,6 +39,7 @@ import com.durakcheat.ui.component.leaf.CashDisplay
 import com.durakcheat.ui.component.leaf.GameRulesRow
 import com.durakcheat.ui.component.leaf.ListSlider
 import com.durakcheat.ui.component.leaf.MultiSelectionRow
+import com.durakcheat.ui.component.leaf.NamedTextCounterRow
 import com.durakcheat.ui.component.leaf.TextCounter
 import com.durakcheat.ui.component.leaf.ThickButton
 
@@ -141,7 +143,7 @@ fun SearchTab(activity: MainActivity){
         }
     }
     // Main content
-    TitleText("Game search", Modifier.fillMaxWidth())
+    TitleText(stringResource(R.string.game_search), Modifier.fillMaxWidth())
     ButtonTextOnly(text = stringResource(R.string.a_filter), modifier = Modifier.fillMaxWidth()){
         filterOpener(Unit)
     }
@@ -162,12 +164,11 @@ fun SearchTab(activity: MainActivity){
                 GameRulesRow(game)
                 Row {
                     if (game.pr)
-                        Icon(painterResource(R.drawable.ico_lock), "Private")
+                        Icon(painterResource(R.drawable.ico_lock), stringResource(R.string.password_required))
                     Text(text = game.name, maxLines = 1)
                 }
-                Row {
-                    Text("Players:")
-                    TextCounter(game.cp)
+                Rov {
+                    NamedTextCounterRow(R.string.players, game.cp)
                     Text("/")
                     TextCounter(game.p)
                 }

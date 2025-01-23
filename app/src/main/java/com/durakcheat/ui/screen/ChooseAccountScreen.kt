@@ -56,7 +56,7 @@ fun ChooseAccountScreen(activity: MainActivity, tokens: MutableList<String>, onC
 
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
         InputLineField(
-            placeholder = "Enter an account token",
+            placeholder = stringResource(R.string.placeholder_add_token),
             modifier = Modifier.fillMaxWidth(),
             autoClear = true,
             onEnter = { token -> coroutineScope.launch {
@@ -84,7 +84,7 @@ fun ChooseAccountScreen(activity: MainActivity, tokens: MutableList<String>, onC
                         text = it.value.name,
                         modifier = Modifier.weight(1f)
                     )
-                    ButtonIconOnly(R.drawable.copy, "Copy") {
+                    ButtonIconOnly(R.drawable.copy, stringResource(R.string.to_copy)) {
                         clipboard.setText(AnnotatedString(it.key))
                     }
                     ButtonDelete {
@@ -97,7 +97,7 @@ fun ChooseAccountScreen(activity: MainActivity, tokens: MutableList<String>, onC
         Row {
             ButtonIconOnly(
                 R.drawable.palette,
-                "Color palette",
+                stringResource(R.string.screen_palette),
                 onClick = { activity.nav.navigate("palette") }
             )
         }

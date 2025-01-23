@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
 import com.durakcheat.R
@@ -40,7 +41,7 @@ fun CashDisplay(n: Long, modifier: Modifier = Modifier, color: Color? = null, fo
         )
         Icon(
             painter = painterResource(R.drawable.ico_cash),
-            contentDescription = "Cash",
+            contentDescription = stringResource(R.string.money),
             modifier = Modifier.fillMaxHeight().aspectRatio(1f),
             tint = color ?: LocalContentColor.current
         )
@@ -59,7 +60,7 @@ fun CoinsDisplay(n: Long, modifier: Modifier = Modifier, fontSize: TextUnit = 20
         )
         Icon(
             painter = painterResource(R.drawable.coin),
-            contentDescription = "Coins",
+            contentDescription = stringResource(R.string.coins),
             modifier = Modifier.fillMaxHeight().aspectRatio(1f),
             tint = Color.Unspecified
         )

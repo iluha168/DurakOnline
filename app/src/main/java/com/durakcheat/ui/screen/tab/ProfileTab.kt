@@ -35,7 +35,7 @@ fun ProfileTab(activity: MainActivity){
         content = { -> Text(stringResource(R.string.rejoin_failed)) }
     )
 
-    TitleText("Profile", Modifier.fillMaxWidth())
+    TitleText(stringResource(R.string.profile), Modifier.fillMaxWidth())
     Row {
         UserAvatar(
             user = DUser(
@@ -55,11 +55,11 @@ fun ProfileTab(activity: MainActivity){
     HorizontalDivider()
     with(activity.client){
         Column(Modifier.animateContentSize()) {
-            PlayButton("Quick game", Modifier.fillMaxWidth()) {
+            PlayButton(stringResource(R.string.quick_game), Modifier.fillMaxWidth()) {
                 gameQuickStart()
             }
             lastGame.value?.let {
-                PlayButton("Rejoin last game", Modifier.fillMaxWidth()) {
+                PlayButton(stringResource(R.string.rejoin_try), Modifier.fillMaxWidth()) {
                     rejoinGame(it, failed = {
                         lastGame.value = null
                         rejoinFailedDlgOpener()

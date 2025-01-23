@@ -11,8 +11,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.durakcheat.MainActivity
+import com.durakcheat.R
 import com.durakcheat.net.packet.DFriendListEntryType
 import com.durakcheat.net.packet.DUserInfo
 import com.durakcheat.ui.component.container.ColumnDialog
@@ -27,14 +29,14 @@ fun ProfileDialogScreen (userID: Long, activity: MainActivity){
     }
 
     ColumnDialog(
-        title = "User info",
+        title = stringResource(R.string.profile),
         closer = { activity.nav.navigateUp() }
     ){
         Row {
             UserAvatar(user, null, 160.dp)
             Column {
                 user?.run {
-                    Text("Registration date: $dtp")
+                    Text("WIP!\nRegistration date: $dtp")
                     // TODO achievements
                 } ?: CircularProgressIndicator()
             }
@@ -45,13 +47,13 @@ fun ProfileDialogScreen (userID: Long, activity: MainActivity){
                 // Friend button
                 val friend = activity.client.friends[userID]
                 val action = when (friend?.raw?.kind) {
-                    DFriendListEntryType.FRIEND -> "Open chat" to { activity.nav.navigate("chat/$userID") }
-                    DFriendListEntryType.REQUEST -> "Cancel friend request" to { activity.client.friendDelete(friend.raw) }
-                    DFriendListEntryType.INVITE -> "Accept friend request" to { activity.client.friendRequestAccept(friend.raw) }
-                    DFriendListEntryType.NOBODY, null -> "Send friend request" to { activity.client.friendRequestSend(user!!) }
+                    DFriendListEntryType.FRIEND -> R.string.user_chat_open to { activity.nav.navigate("chat/$userID") }
+                    DFriendListEntryType.REQUEST -> R.string.user_friend_request_cancel to { activity.client.friendDelete(friend.raw) }
+                    DFriendListEntryType.INVITE -> R.string.user_friend_request_accept to { activity.client.friendRequestAccept(friend.raw) }
+                    DFriendListEntryType.NOBODY, null -> R.string.user_friend_request_send to { activity.client.friendRequestSend(user!!) }
                 }
                 ButtonTextOnly(
-                    text = action.first,
+                    text = stringResource(action.first),
                     modifier = Modifier.weight(1f),
                     onClick = action.second
                 )

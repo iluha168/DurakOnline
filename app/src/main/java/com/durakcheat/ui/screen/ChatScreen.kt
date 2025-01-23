@@ -81,7 +81,7 @@ fun ChatScreen(userID: Long, activity: MainActivity){
         ) {
             UserAvatar(friend.raw.user, activity.nav, avatarSize)
             if(canLoadMore)
-                ButtonIconOnly(Icons.Default.Refresh, "Load more", onClick = loadMore)
+                ButtonIconOnly(Icons.Default.Refresh, stringResource(R.string.load_more), onClick = loadMore)
         }
         HorizontalDivider()
         LazyListColumn(
@@ -129,10 +129,10 @@ fun ChatScreen(userID: Long, activity: MainActivity){
                 onValueChange = {
                     input = it.slice(0..min(MAX_MESSAGE_LENGTH, it.length)-1)
                 },
-                placeholder = { Text("Enter a message...") },
+                placeholder = { Text(stringResource(R.string.placeholder_send_message)) },
                 modifier = Modifier.weight(1f),
             )
-            TransparentButtonIcon(Icons.AutoMirrored.Filled.Send, "Send") {
+            TransparentButtonIcon(Icons.AutoMirrored.Filled.Send, stringResource(R.string.to_send)) {
                 activity.client.friendMessageSend(input, friend.raw)
                 input = ""
             }
