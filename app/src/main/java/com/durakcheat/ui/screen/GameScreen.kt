@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -22,7 +21,6 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -60,6 +58,7 @@ import com.durakcheat.ui.component.container.columnDialog
 import com.durakcheat.ui.component.container.lazyColumnDialog
 import com.durakcheat.ui.component.highlevel.ButtonHand
 import com.durakcheat.ui.component.highlevel.ButtonHandShare
+import com.durakcheat.ui.component.highlevel.ButtonSmile
 import com.durakcheat.ui.component.highlevel.UserGameStatusIndicators
 import com.durakcheat.ui.component.highlevel.playerCardsBreakdown
 import com.durakcheat.ui.component.leaf.ButtonTextOnly
@@ -142,18 +141,7 @@ fun GameScreen(activity: MainActivity){
             modifier = Modifier.fillMaxWidth()
         ) {
             items(DSmile.vanillaSmiles){
-                ThickButton(
-                    onClick = { game.smile(it) },
-                    slim = true,
-                    color = MaterialTheme.colorScheme.primary,
-                    shape = CircleShape
-                ) {
-                    Icon(
-                        painterResource(it.img), it.name,
-                        modifier = Modifier.aspectRatio(1f),
-                        tint = Color.Unspecified
-                    )
-                }
+                ButtonSmile(it) { game.smile(it) }
             }
         }
     }
@@ -306,7 +294,7 @@ fun GameScreen(activity: MainActivity){
                 // Board
                 Watcher({ game.pos.board.size }, { sNew, sOld ->
                     if(sNew > sOld) soundCardPlace()
-                    if(sNew < sOld) soundCardDiscard()
+                    else if(sNew < sOld) soundCardDiscard()
                 })
                 FlowRow(
                     horizontalArrangement = Arrangement.SpaceAround,
@@ -339,7 +327,7 @@ fun GameScreen(activity: MainActivity){
                                 trumpSuit = trumpSuit
                             )
                             if(stack.second != null)
-                                DCardDisplay(card = stack.second!!, trumpSuit = trumpSuit)
+                                DCardDisplay(card = stack.second, trumpSuit = trumpSuit)
                         }
                     }
                     if(game.clientPlayer.mode == DPlayerMode.BEAT)

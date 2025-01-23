@@ -7,15 +7,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -27,7 +23,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -46,6 +41,7 @@ import com.durakcheat.ui.component.container.TitleText
 import com.durakcheat.ui.component.highlevel.ButtonHand
 import com.durakcheat.ui.component.highlevel.ButtonHandShare
 import com.durakcheat.ui.component.highlevel.ButtonQuickGame
+import com.durakcheat.ui.component.highlevel.ButtonSmile
 import com.durakcheat.ui.component.highlevel.ListElementFriend
 import com.durakcheat.ui.component.highlevel.ListElementToken
 import com.durakcheat.ui.component.highlevel.UserGameStatusIndicators
@@ -111,6 +107,7 @@ fun PaletteScreen(activity: MainActivity){
         val user = DUserInfoPersonal.dummy
         val trumpSuit = DCardSuit.entries.random()
         val randomBoolean = { Math.random() > 0.5 }
+        val randomInt = { i: Int -> Math.random().times(i+1).toInt() }
 
         ButtonQuickGame(maxW, openers[0])
         ListElementToken(openers[4], openers[0], openers[5], user, maxW)
@@ -118,14 +115,14 @@ fun PaletteScreen(activity: MainActivity){
         Rov(maxW) {
             Column(Modifier.width(avatarSize)) {
                 UserAvatar(user, null, avatarSize)
-                when ((Math.random() * 4).toInt()) {
-                    0 -> LinearProgressIndicator(color = MaterialTheme.colorScheme.primary)
-                    1 -> LinearProgressIndicator(color = MaterialTheme.colorScheme.tertiary)
-                    2 -> LinearProgressIndicator(color = MaterialTheme.colorScheme.error)
-                    3 -> LinearProgressIndicator(color = Color.Unspecified)
+                when (randomInt(4)) {
+                    0    -> LinearProgressIndicator(color = MaterialTheme.colorScheme.primary)
+                    1    -> LinearProgressIndicator(color = MaterialTheme.colorScheme.tertiary)
+                    2    -> LinearProgressIndicator(color = MaterialTheme.colorScheme.error)
+                    else -> LinearProgressIndicator(color = Color.Unspecified)
                 }
             }
-            ButtonHand(Math.random().times(15.0).toInt(), openers[2])
+            ButtonHand(randomInt(99), openers[2])
             ButtonHandShare(randomBoolean(), openers[4])
             UserGameStatusIndicators(
                 isReady = randomBoolean(),
@@ -133,7 +130,7 @@ fun PaletteScreen(activity: MainActivity){
                 hasDisconnected = randomBoolean(),
                 wantsToSwap = randomBoolean(),
                 onClickSwap = openers[4],
-                winAmount = Math.random().times(1000.0).toLong(),
+                winAmount = randomInt(999).toLong(),
                 isWinAmountShown = { randomBoolean() }
             )
         }
@@ -154,21 +151,10 @@ fun PaletteScreen(activity: MainActivity){
             )
         }
 
-        Row {
-            for (it in DSmile.vanillaSmiles.shuffled().subList(0,5))
-                ThickButton(
-                    onClick = openers[0],
-                    slim = true,
-                    color = MaterialTheme.colorScheme.primary,
-                    shape = CircleShape,
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Icon(
-                        painterResource(it.img), it.name,
-                        modifier = Modifier.aspectRatio(1f),
-                        tint = Color.Unspecified
-                    )
-                }
+        Rov {
+            for(smile in DSmile.vanillaSmiles.shuffled().subList(0,8)) {
+                ButtonSmile(smile, Modifier.weight(1f), openers[0])
+            }
         }
 
         ThickButton(
@@ -181,7 +167,7 @@ fun PaletteScreen(activity: MainActivity){
         }
 
         Rov(modifier = Modifier.align(Alignment.CenterHorizontally)) {
-            NamedTextCounterRow(R.string.deck_left, (Math.random() * DDeck.entries.random().size).toInt())
+            NamedTextCounterRow(R.string.deck_left, randomInt(DDeck.entries.random().size))
             DCardDisplay(DCard(trumpSuit, DCardValue.entries.random()), trumpSuit = trumpSuit)
         }
         ThickButton(
@@ -190,7 +176,7 @@ fun PaletteScreen(activity: MainActivity){
             color = MaterialTheme.colorScheme.secondary
         ) {
             Text(stringResource(R.string.to_check))
-            TextCounter((Math.random() * DDeck.entries.random().size).toInt())
+            TextCounter(randomInt(DDeck.entries.random().size))
             Text(stringResource(R.string.cards_discarded).lowercase())
         }
         ThickButton(
@@ -199,7 +185,7 @@ fun PaletteScreen(activity: MainActivity){
             color = MaterialTheme.colorScheme.secondary
         ) {
             Text(stringResource(R.string.to_check))
-            TextCounter((Math.random() * DDeck.entries.random().size).toInt())
+            TextCounter(randomInt(DDeck.entries.random().size))
             Text(stringResource(R.string.cards_unseen).lowercase())
         }
 
@@ -207,16 +193,15 @@ fun PaletteScreen(activity: MainActivity){
             horizontalArrangement = Arrangement.SpaceAround,
             modifier = maxW,
         ) {
-            val hand = DDeck.entries.random().cards().shuffled().subList(0, 2 + (Math.random() * 10).toInt())
+            val hand = DDeck.entries.random().cards().shuffled().subList(0, randomInt(10)+2)
             var handCardSelected by remember { mutableStateOf(hand.random()) }
             for (card in hand) {
-                val isCardUseful = Math.random() > 0.5
                 DCardDisplay(
                     card = card,
                     modifier = Modifier
                         .animatePlacement()
                         .stackableBorder(card == handCardSelected, MaterialTheme.colorScheme.primary, CardShape)
-                        .stackableBorder(isCardUseful, MaterialTheme.colorScheme.tertiary, CardShape)
+                        .stackableBorder(randomBoolean(), MaterialTheme.colorScheme.tertiary, CardShape)
                         .clickable { handCardSelected = card },
                     trumpSuit = trumpSuit
                 )
