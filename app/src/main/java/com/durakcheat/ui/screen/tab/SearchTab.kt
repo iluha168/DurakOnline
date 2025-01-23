@@ -1,7 +1,6 @@
 package com.durakcheat.ui.screen.tab
 
 import androidx.annotation.DrawableRes
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -43,7 +42,6 @@ import com.durakcheat.ui.component.leaf.NamedTextCounterRow
 import com.durakcheat.ui.component.leaf.TextCounter
 import com.durakcheat.ui.component.leaf.ThickButton
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SearchTab(activity: MainActivity){
     var filter = activity.client.lastLookupFilter.value ?: DLookupStartOptions()
@@ -155,7 +153,7 @@ fun SearchTab(activity: MainActivity){
         ThickButton(
             onClick = { activity.client.joinGame(DGameJoin(game.id, null)) },
             modifier = Modifier
-                .animateItemPlacement()
+                .animateItem()
                 .fillMaxWidth(),
             enabled = myBalance >= game.bet && !game.pr,
             slim = true,

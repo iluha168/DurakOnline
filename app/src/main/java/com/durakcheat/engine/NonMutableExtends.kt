@@ -1,7 +1,5 @@
 package com.durakcheat.engine
 
-fun <T> List<T>.withRemovedAt(i: Int) = this.toMutableList().apply { removeAt(i) }
-
 fun <T> ArrayList(size: Int, init: (Int) -> T) = ArrayList<T>(size).apply {
     for(i in 0..<size)
         add(init(i))

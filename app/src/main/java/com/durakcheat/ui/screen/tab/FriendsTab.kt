@@ -6,7 +6,6 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -32,7 +31,6 @@ import com.durakcheat.ui.component.leaf.InputLineField
 import com.durakcheat.ui.component.leaf.TransparentButtonIcon
 import com.durakcheat.ui.dialog.confirmationDialog
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun FriendsTab(activity: MainActivity){
     var searchModeEnabled by remember { mutableStateOf(false) }
@@ -90,7 +88,7 @@ fun FriendsTab(activity: MainActivity){
         ListElementFriend(
             modifier = Modifier
                 .fillMaxWidth()
-                .animateItemPlacement(),
+                .animateItem(),
             user = friend.raw.user,
             nav = activity.nav,
             friendKind = friend.raw.kind,

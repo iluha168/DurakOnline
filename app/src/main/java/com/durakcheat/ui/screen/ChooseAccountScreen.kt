@@ -1,6 +1,5 @@
 package com.durakcheat.ui.screen
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -27,7 +26,6 @@ import com.durakcheat.ui.component.leaf.InputLineField
 import com.durakcheat.ui.dialog.confirmationDialog
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ChooseAccountScreen(activity: MainActivity, tokens: MutableList<String>, onChoice: (String) -> Unit){
     val users = remember { mutableStateMapOf<String, DUserInfoPersonal>() }
@@ -70,7 +68,7 @@ fun ChooseAccountScreen(activity: MainActivity, tokens: MutableList<String>, onC
             ListElementToken(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .animateItemPlacement(),
+                    .animateItem(),
                 onClick = { onChoice(it.key) },
                 onCopy = { clipboard.setText(AnnotatedString(it.key)) },
                 onDelete = { tokenDeleteDlgOpener(it.key) },

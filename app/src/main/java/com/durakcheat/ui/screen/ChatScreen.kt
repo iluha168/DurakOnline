@@ -1,6 +1,5 @@
 package com.durakcheat.ui.screen
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -44,7 +43,6 @@ import kotlin.math.min
 
 const val MAX_MESSAGE_LENGTH = 255
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ChatScreen(userID: Long, activity: MainActivity){
     val friend = activity.client.friends[userID]
@@ -94,7 +92,7 @@ fun ChatScreen(userID: Long, activity: MainActivity){
             Rov(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .animateItemPlacement(),
+                    .animateItem(),
                 horizontalArrangement = if(isMyMsg) Arrangement.End else Arrangement.Start
             ) {
                 val closeBtn = @Composable {

@@ -73,10 +73,6 @@ fun <T : Any> columnDialog(title: String, content: @Composable ColumnScope.(T, c
 fun <T> ((T)->Unit).bind(arg: T) = ({ this(arg) })
 
 @Composable
-inline fun <T : Any> columnDialog(title: String, crossinline content: @Composable ColumnScope.(T) -> Unit)
-        = columnDialog<T>(title){ v,_ -> content(v) }
-
-@Composable
 inline fun columnDialog(title: String, crossinline content: @Composable ColumnScope.() -> Unit)
         = columnDialog<Unit>(title){ _,_ -> content() }.bind(Unit)
 
@@ -92,7 +88,3 @@ fun <T : Any> lazyColumnDialog(title: String, content: LazyListScope.(T, closer:
 @Composable
 inline fun <T : Any> lazyColumnDialog(title: String, crossinline content: LazyListScope.(T) -> Unit)
         = lazyColumnDialog<T>(title){ v,_ -> content(v) }
-
-@Composable
-inline fun lazyColumnDialog(title: String, crossinline content: LazyListScope.() -> Unit)
-        = lazyColumnDialog<Unit>(title){ _,_ -> content() }.bind(Unit)

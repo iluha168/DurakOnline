@@ -1,18 +1,19 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
+    alias(libs.plugins.composeCompiler)
 }
 
 android {
     namespace = "com.durakcheat"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.durakcheat"
         minSdk = 29
-        targetSdk = 34
-        versionCode = 2
-        versionName = "1.1"
+        targetSdk = 35
+        versionCode = 3
+        versionName = "1.2"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -63,6 +64,7 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.coil.compose)
     implementation(libs.moshi.adapters)
+    implementation(libs.accompanist.systemuicontroller)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

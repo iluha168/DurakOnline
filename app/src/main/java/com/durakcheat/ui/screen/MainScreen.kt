@@ -55,8 +55,7 @@ enum class MainScreenTab (
     CREATE(Icons.Default.Add, {CreateTab(it)});
 
     companion object {
-        val default: MainScreenTab
-            get() = PROFILE
+        val default = PROFILE
     }
 }
 
