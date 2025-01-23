@@ -8,9 +8,11 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.SubcomposeAsyncImage
 import com.durakcheat.MainActivity
+import com.durakcheat.R
 import com.durakcheat.net.DServers
 import com.durakcheat.ui.component.container.Rov
 import com.durakcheat.ui.component.container.lazyColumnDialog
@@ -33,7 +35,7 @@ fun ServerSwitcher(activity: MainActivity, modifier: Modifier = Modifier) {
     activity.servers ?: return
 
     val currentServer = activity.servers!!.user[activity.lastConnectedServer.str]
-    val dlgOpener = lazyColumnDialog<Unit>(title = "Select the server") { _, closer ->
+    val dlgOpener = lazyColumnDialog<Unit>(stringResource(R.string.dlg_title_select_server)) { _, closer ->
         items(activity.servers!!.user.toList()) { (serverID, server) ->
             Rov(
                 horizontalArrangement = Arrangement.Start,

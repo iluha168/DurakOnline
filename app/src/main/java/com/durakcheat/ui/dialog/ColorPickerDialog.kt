@@ -17,7 +17,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.durakcheat.R
 import com.durakcheat.ui.component.container.columnDialog
 import com.durakcheat.ui.component.leaf.ButtonTextOnly
 
@@ -48,7 +50,7 @@ initialColor, close ->
         modifier = Modifier.fillMaxWidth(),
         valueRange = 0f..1f,
     )
-    ButtonTextOnly(text = "Choose", modifier = Modifier.fillMaxWidth(), color = color) {
+    ButtonTextOnly(text = stringResource(R.string.to_choose), modifier = Modifier.fillMaxWidth(), color = color) {
         onPick(color)
         close()
     }

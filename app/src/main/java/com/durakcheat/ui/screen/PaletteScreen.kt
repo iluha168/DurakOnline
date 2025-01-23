@@ -79,11 +79,14 @@ import com.durakcheat.ui.stackableBorder
 @Composable
 fun PaletteScreen(activity: MainActivity){
     val palette = activity.themePalette.value!!
-    val names = listOf("Primary", "Secondary", "Tertiary", "Text", "Text2", "Warning")
+    val names = listOf(
+        R.string.palette_primary, R.string.palette_secondary, R.string.palette_tertiary,
+        R.string.palette_text1, R.string.palette_text2, R.string.palette_warning
+    )
     val openers = mutableListOf<() -> Unit>()
     for(i in names.indices)
         openers.add(
-            opaqueColorPickerDialog(title = names[i]) {
+            opaqueColorPickerDialog(title = stringResource(names[i])) {
                 activity.themePalette.value = palette.replace(i, it)
             }.let {
                 { it(palette[i]) }
@@ -95,7 +98,7 @@ fun PaletteScreen(activity: MainActivity){
         modifier = Modifier.verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
-        TitleText("Palette editor", maxW)
+        TitleText(stringResource(R.string.screen_palette), maxW)
         FlowRow(
             horizontalArrangement = Arrangement.SpaceAround,
             verticalArrangement = Arrangement.spacedBy(5.dp),
@@ -109,7 +112,7 @@ fun PaletteScreen(activity: MainActivity){
                 ) {
                     Column {
                         Text(
-                            text = names[i],
+                            text = stringResource(names[i]),
                             modifier = Modifier.width(colorPickerWidth),
                             textAlign = TextAlign.Center
                         )
@@ -120,7 +123,7 @@ fun PaletteScreen(activity: MainActivity){
                     }
                 }
         }
-        TitleText("Examples", maxW)
+        TitleText(stringResource(R.string.examples), maxW)
 
         val user = DUser(name = "Dummy" + (Math.random() * 100).toInt())
         val friend = MutableStateDFriendListEntry(
@@ -128,7 +131,7 @@ fun PaletteScreen(activity: MainActivity){
         )
         val trumpSuit = DCardSuit.entries.random()
 
-        PlayButton("Quick game", maxW, onClick = openers[0])
+        PlayButton(stringResource(R.string.quick_game), maxW, onClick = openers[0])
 
         ThickButton(
             onClick = openers[4],
@@ -165,7 +168,7 @@ fun PaletteScreen(activity: MainActivity){
             )
             ThickButton(
                 onClick = openers[4],
-                content = { Icon(Icons.Default.Share, "Share hand") },
+                content = { Icon(Icons.Default.Share, stringResource(R.string.share_hand)) },
                 slim = true, shape = RoundedCornerShape(10.dp),
                 modifier = Modifier.width(40.dp)
             )
@@ -173,8 +176,8 @@ fun PaletteScreen(activity: MainActivity){
                 modifier = Modifier.animateContentSize(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Icon(Icons.Default.Check, "Ready")
-                Icon(Icons.Default.Build, "Disconnected")
+                Icon(Icons.Default.Check, stringResource(R.string.is_ready))
+                Icon(Icons.Default.Build, stringResource(R.string.disconnected))
                 // Cash won/lost
                 RememberingAnimatedVisibility(
                     value = -100L,
@@ -202,8 +205,8 @@ fun PaletteScreen(activity: MainActivity){
                     )
                     Text(
                         when (friend.raw.kind) {
-                            DFriendListEntryType.REQUEST -> "Outgoing friend request"
-                            DFriendListEntryType.INVITE -> "Incoming friend request"
+                            DFriendListEntryType.REQUEST -> stringResource(R.string.user_friend_request_outbound)
+                            DFriendListEntryType.INVITE -> stringResource(R.string.user_friend_request_inbound)
                             else -> ""
                         }
                     )
@@ -213,21 +216,21 @@ fun PaletteScreen(activity: MainActivity){
                 ) {
                     when (friend.raw.kind) {
                         DFriendListEntryType.INVITE -> {
-                            TransparentButtonIcon(Icons.Default.Check, "Accept") {}
-                            TransparentButtonIcon(Icons.Default.Clear, "Decline") {}
-                            TransparentButtonIcon(Icons.Default.Warning, "Never") {}
+                            TransparentButtonIcon(Icons.Default.Check, stringResource(R.string.to_accept)) {}
+                            TransparentButtonIcon(Icons.Default.Clear, stringResource(R.string.to_decline)) {}
+                            TransparentButtonIcon(Icons.Default.Warning, stringResource(R.string.to_decline_always)) {}
                         }
 
                         DFriendListEntryType.FRIEND -> {
-                            TransparentButtonIcon(Icons.Default.Clear, "Remove") {}
-                            TransparentButtonIcon(Icons.Default.MailOutline, "Chat") {}
+                            TransparentButtonIcon(Icons.Default.Clear, stringResource(R.string.delete)) {}
+                            TransparentButtonIcon(Icons.Default.MailOutline, stringResource(R.string.user_chat_open)) {}
                         }
 
                         DFriendListEntryType.REQUEST ->
-                            TransparentButtonIcon(Icons.Default.Clear, "Cancel request") {}
+                            TransparentButtonIcon(Icons.Default.Clear, stringResource(R.string.user_friend_request_cancel)) {}
 
                         DFriendListEntryType.NOBODY ->
-                            TransparentButtonIcon(Icons.Default.Add, "Send request") {}
+                            TransparentButtonIcon(Icons.Default.Add, stringResource(R.string.user_friend_request_send)) {}
                     }
                 }
             }
@@ -255,7 +258,7 @@ fun PaletteScreen(activity: MainActivity){
             color = MaterialTheme.colorScheme.secondary,
             modifier = maxW
         ) {
-            Text("Place")
+            Text(stringResource(R.string.to_place))
             DCardDisplay(cards = DDeck.entries.random().cards().shuffled().subList(0, 3), trumpSuit = trumpSuit)
         }
 
@@ -268,18 +271,18 @@ fun PaletteScreen(activity: MainActivity){
             onClick = openers[1],
             color = MaterialTheme.colorScheme.secondary
         ) {
-            Text("See")
+            Text(stringResource(R.string.to_check))
             TextCounter((Math.random() * DDeck.entries.random().size).toInt())
-            Text("discarded cards")
+            Text(stringResource(R.string.cards_discarded).lowercase())
         }
         ThickButton(
             modifier = maxW,
             onClick = openers[1],
             color = MaterialTheme.colorScheme.secondary
         ) {
-            Text("See")
+            Text(stringResource(R.string.to_check))
             TextCounter((Math.random() * DDeck.entries.random().size).toInt())
-            Text(stringResource(R.string.unseen_cards).lowercase())
+            Text(stringResource(R.string.cards_unseen).lowercase())
         }
 
         FlowRow(
