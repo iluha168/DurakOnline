@@ -64,6 +64,7 @@ import com.durakcheat.ui.component.container.RememberingAnimatedVisibility
 import com.durakcheat.ui.component.container.Rov
 import com.durakcheat.ui.component.container.columnDialog
 import com.durakcheat.ui.component.container.lazyColumnDialog
+import com.durakcheat.ui.component.highlevel.ButtonHand
 import com.durakcheat.ui.component.leaf.ButtonTextOnly
 import com.durakcheat.ui.component.leaf.CardShape
 import com.durakcheat.ui.component.leaf.CashDisplay
@@ -249,13 +250,9 @@ fun GameScreen(activity: MainActivity){
                         Column {
                             // Amount of cards
                             if(game.started && game.players[playerIndex].winAmount == 0L)
-                                ThickButton(
-                                    onClick = { cardsOfPlayerDlgOpener(playerIndex) },
-                                    content = { TextCounter(player.cards.size, 26.sp, isInText = false) },
-                                    color = MaterialTheme.colorScheme.tertiary,
-                                    slim = true, shape = RoundedCornerShape(10.dp),
-                                    modifier = Modifier.width(40.dp)
-                                )
+                                ButtonHand(player.cards.size) {
+                                    cardsOfPlayerDlgOpener(playerIndex)
+                                }
                             // Share hand with a friend
                             val friend = activity.client.friends[playerSocial.user?.id]?.raw
                             if(game.started && friend?.kind == DFriendListEntryType.FRIEND) {
