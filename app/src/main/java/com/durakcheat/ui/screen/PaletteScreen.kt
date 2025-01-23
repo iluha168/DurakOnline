@@ -53,15 +53,14 @@ import com.durakcheat.net.json.DDeck
 import com.durakcheat.net.json.DSmile
 import com.durakcheat.net.packet.DFriendListEntry
 import com.durakcheat.net.packet.DFriendListEntryType
-import com.durakcheat.net.packet.DUser
+import com.durakcheat.net.packet.DUserInfoPersonal
 import com.durakcheat.net.packet.MutableStateDFriendListEntry
 import com.durakcheat.ui.animatePlacement
 import com.durakcheat.ui.component.container.RememberingAnimatedVisibility
 import com.durakcheat.ui.component.container.Rov
 import com.durakcheat.ui.component.container.TitleText
 import com.durakcheat.ui.component.highlevel.ButtonQuickGame
-import com.durakcheat.ui.component.leaf.ButtonDelete
-import com.durakcheat.ui.component.leaf.ButtonIconOnly
+import com.durakcheat.ui.component.highlevel.ListElementToken
 import com.durakcheat.ui.component.leaf.CardShape
 import com.durakcheat.ui.component.leaf.CashDisplay
 import com.durakcheat.ui.component.leaf.DCardDisplay
@@ -125,29 +124,14 @@ fun PaletteScreen(activity: MainActivity){
         }
         TitleText(stringResource(R.string.examples), maxW)
 
-        val user = DUser(name = "Dummy" + (Math.random() * 100).toInt())
+        val user = DUserInfoPersonal.dummy
         val friend = MutableStateDFriendListEntry(
             DFriendListEntry(user, DFriendListEntryType.entries.random(), Math.random() > 0.5)
         )
         val trumpSuit = DCardSuit.entries.random()
 
         ButtonQuickGame(maxW, openers[0])
-
-        ThickButton(
-            onClick = openers[4],
-            modifier = maxW,
-            slim = true,
-        ) {
-            Rov(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                UserAvatarIcon(null, nav = null, 70.dp)
-                Text(
-                    text = user.name,
-                    modifier = Modifier.weight(1f)
-                )
-                ButtonIconOnly(R.drawable.copy, "Copy", onClick = openers[0])
-                ButtonDelete(onClick = openers[5])
-            }
-        }
+        ListElementToken(openers[4], openers[0], openers[5], user, maxW)
 
         Rov(maxW) {
             Column(Modifier.width(avatarSize)) {

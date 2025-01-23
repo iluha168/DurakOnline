@@ -60,7 +60,13 @@ class DUserInfoPersonal (
     achieve: String
 ): DUser(
     -1L, name, avatar, dtp, score, pw, frame, achieve
-)
+) {
+    companion object {
+        val dummy = DUserInfoPersonal(
+            "Dummy", null, Date(0L), 1234L, 1, false, "", ""
+        )
+    }
+}
 
 class DUsersByTokensRequest (
     val tokens: List<String>
