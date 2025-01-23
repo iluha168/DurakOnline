@@ -9,6 +9,7 @@ import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -30,7 +31,7 @@ fun UserAvatarIcon(user: DUser?, nav: NavHostController?, size: Dp, modifier: Mo
     @Composable
     fun content(){
         if(user.avatar == null)
-            Icon(Icons.Default.AccountBox, userAvatarStr, sizeM)
+            Icon(Icons.Default.AccountBox, userAvatarStr, sizeM, tint = MaterialTheme.colorScheme.onSurface)
         else
             SubcomposeAsyncImage(
                 model = user.avatar,

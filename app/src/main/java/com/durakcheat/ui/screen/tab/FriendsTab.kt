@@ -7,20 +7,9 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.MailOutline
-import androidx.compose.material.icons.filled.Warning
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -28,26 +17,20 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import com.durakcheat.MainActivity
 import com.durakcheat.R
 import com.durakcheat.net.packet.DFriendListEntry
-import com.durakcheat.net.packet.DFriendListEntryType
 import com.durakcheat.net.packet.DUser
 import com.durakcheat.net.packet.MutableStateDFriendListEntry
 import com.durakcheat.ui.component.container.EmptySpaceFillerText
 import com.durakcheat.ui.component.container.LazyListColumn
 import com.durakcheat.ui.component.container.Rov
 import com.durakcheat.ui.component.container.TitleText
+import com.durakcheat.ui.component.highlevel.ListElementFriend
 import com.durakcheat.ui.component.leaf.InputLineField
-import com.durakcheat.ui.component.leaf.ThickButton
 import com.durakcheat.ui.component.leaf.TransparentButtonIcon
-import com.durakcheat.ui.component.leaf.UserAvatarIcon
 import com.durakcheat.ui.dialog.confirmationDialog
-import com.durakcheat.ui.noClip
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -104,65 +87,25 @@ fun FriendsTab(activity: MainActivity){
         key = { it.raw.user.id },
         placeholder = { EmptySpaceFillerText(R.string.empty_users_list) },
     ) { friend ->
-        val openChat = {
-            activity.nav.navigate("chat/"+friend.raw.user.id)
-        }
-        ThickButton(
+        ListElementFriend(
             modifier = Modifier
                 .fillMaxWidth()
                 .animateItemPlacement(),
-            slim = true,
-            enabled = friend.raw.kind == DFriendListEntryType.FRIEND,
-            onClick = openChat,
-        ) {
-            Rov(modifier = Modifier.noClip()) {
-                UserAvatarIcon(friend.raw.user, activity.nav, 50.dp)
-                Spacer(modifier = Modifier.width(10.dp))
-                Column(Modifier.weight(1f)) {
-                    Text(
-                        text = friend.raw.user.name,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-                    Text(when(friend.raw.kind){
-                        DFriendListEntryType.REQUEST -> stringResource(R.string.user_friend_request_outbound)
-                        DFriendListEntryType.INVITE -> stringResource(R.string.user_friend_request_inbound)
-                        else -> ""
-                    })
-                }
-                Row(
-                    modifier = Modifier.background(if(friend.stateNew) MaterialTheme.colorScheme.errorContainer else Color.Transparent)
-                ) {
-                    when(friend.raw.kind){
-                        DFriendListEntryType.INVITE -> {
-                            TransparentButtonIcon(Icons.Default.Check, stringResource(R.string.to_accept)) {
-                                activity.client.friendRequestAccept(friend.raw)
-                                friend.stateNew = false
-                            }
-                            TransparentButtonIcon(Icons.Default.Clear, stringResource(R.string.to_decline)) {
-                                activity.client.friendRequestDecline(friend.raw)
-                            }
-                            TransparentButtonIcon(Icons.Default.Warning, stringResource(R.string.to_decline_always)) {
-                                ignoreDlgOpener(friend.raw)
-                            }
-                        }
-                        DFriendListEntryType.FRIEND -> {
-                            TransparentButtonIcon(Icons.Default.Clear, stringResource(R.string.delete)) {
-                                deleteDlgOpener(friend.raw)
-                            }
-                            TransparentButtonIcon(Icons.Default.MailOutline, stringResource(R.string.user_chat_open), onClick = openChat)
-                        }
-                        DFriendListEntryType.REQUEST ->
-                            TransparentButtonIcon(Icons.Default.Clear, stringResource(R.string.to_decline)) {
-                                deleteDlgOpener(friend.raw)
-                            }
-                        DFriendListEntryType.NOBODY ->
-                            TransparentButtonIcon(Icons.Default.Add, stringResource(R.string.user_friend_request_send)) {
-                                activity.client.friendRequestSend(friend.raw.user)
-                            }
-                    }
-                }
-            }
-        }
+            user = friend.raw.user,
+            nav = activity.nav,
+            friendKind = friend.raw.kind,
+
+            onChatOpen = { activity.nav.navigate("chat/"+friend.raw.user.id) },
+            onAccept = {
+                activity.client.friendRequestAccept(friend.raw)
+                friend.stateNew = false
+            },
+            onDecline = { activity.client.friendRequestDecline(friend.raw) },
+            onDeclineAlways = { ignoreDlgOpener(friend.raw) },
+            onDelete = { deleteDlgOpener(friend.raw) },
+            onRequestSend = { activity.client.friendRequestSend(friend.raw.user) },
+
+            attractAttention = friend.stateNew,
+        )
     }
 }

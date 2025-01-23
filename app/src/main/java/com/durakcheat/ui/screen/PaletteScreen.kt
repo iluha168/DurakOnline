@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
@@ -16,12 +15,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.MailOutline
-import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -37,7 +30,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.durakcheat.MainActivity
 import com.durakcheat.R
@@ -46,16 +38,15 @@ import com.durakcheat.net.json.DCardSuit
 import com.durakcheat.net.json.DCardValue
 import com.durakcheat.net.json.DDeck
 import com.durakcheat.net.json.DSmile
-import com.durakcheat.net.packet.DFriendListEntry
 import com.durakcheat.net.packet.DFriendListEntryType
 import com.durakcheat.net.packet.DUserInfoPersonal
-import com.durakcheat.net.packet.MutableStateDFriendListEntry
 import com.durakcheat.ui.animatePlacement
 import com.durakcheat.ui.component.container.Rov
 import com.durakcheat.ui.component.container.TitleText
 import com.durakcheat.ui.component.highlevel.ButtonHand
 import com.durakcheat.ui.component.highlevel.ButtonHandShare
 import com.durakcheat.ui.component.highlevel.ButtonQuickGame
+import com.durakcheat.ui.component.highlevel.ListElementFriend
 import com.durakcheat.ui.component.highlevel.ListElementToken
 import com.durakcheat.ui.component.highlevel.UserGameStatusIndicators
 import com.durakcheat.ui.component.leaf.CardShape
@@ -63,11 +54,8 @@ import com.durakcheat.ui.component.leaf.DCardDisplay
 import com.durakcheat.ui.component.leaf.NamedTextCounterRow
 import com.durakcheat.ui.component.leaf.TextCounter
 import com.durakcheat.ui.component.leaf.ThickButton
-import com.durakcheat.ui.component.leaf.TransparentButtonIcon
 import com.durakcheat.ui.component.leaf.UserAvatar
-import com.durakcheat.ui.component.leaf.UserAvatarIcon
 import com.durakcheat.ui.dialog.opaqueColorPickerDialog
-import com.durakcheat.ui.noClip
 import com.durakcheat.ui.stackableBorder
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -121,9 +109,6 @@ fun PaletteScreen(activity: MainActivity){
         TitleText(stringResource(R.string.examples), maxW)
 
         val user = DUserInfoPersonal.dummy
-        val friend = MutableStateDFriendListEntry(
-            DFriendListEntry(user, DFriendListEntryType.entries.random(), Math.random() > 0.5)
-        )
         val trumpSuit = DCardSuit.entries.random()
         val randomBoolean = { Math.random() > 0.5 }
 
@@ -153,52 +138,20 @@ fun PaletteScreen(activity: MainActivity){
             )
         }
 
-        ThickButton(
-            modifier = maxW,
-            slim = true,
-            enabled = friend.raw.kind == DFriendListEntryType.FRIEND,
-            onClick = {},
-        ) {
-            Rov(modifier = Modifier.noClip()) {
-                UserAvatarIcon(friend.raw.user, null, 50.dp)
-                Spacer(modifier = Modifier.width(10.dp))
-                Column(Modifier.weight(1f)) {
-                    Text(
-                        text = friend.raw.user.name,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-                    Text(
-                        when (friend.raw.kind) {
-                            DFriendListEntryType.REQUEST -> stringResource(R.string.user_friend_request_outbound)
-                            DFriendListEntryType.INVITE -> stringResource(R.string.user_friend_request_inbound)
-                            else -> ""
-                        }
-                    )
-                }
-                Row(
-                    modifier = Modifier.background(if (friend.stateNew) MaterialTheme.colorScheme.errorContainer else Color.Transparent)
-                ) {
-                    when (friend.raw.kind) {
-                        DFriendListEntryType.INVITE -> {
-                            TransparentButtonIcon(Icons.Default.Check, stringResource(R.string.to_accept)) {}
-                            TransparentButtonIcon(Icons.Default.Clear, stringResource(R.string.to_decline)) {}
-                            TransparentButtonIcon(Icons.Default.Warning, stringResource(R.string.to_decline_always)) {}
-                        }
-
-                        DFriendListEntryType.FRIEND -> {
-                            TransparentButtonIcon(Icons.Default.Clear, stringResource(R.string.delete)) {}
-                            TransparentButtonIcon(Icons.Default.MailOutline, stringResource(R.string.user_chat_open)) {}
-                        }
-
-                        DFriendListEntryType.REQUEST ->
-                            TransparentButtonIcon(Icons.Default.Clear, stringResource(R.string.user_friend_request_cancel)) {}
-
-                        DFriendListEntryType.NOBODY ->
-                            TransparentButtonIcon(Icons.Default.Add, stringResource(R.string.user_friend_request_send)) {}
-                    }
-                }
-            }
+        repeat(3) {
+            ListElementFriend(
+                modifier = maxW,
+                user = user,
+                nav = null,
+                friendKind = DFriendListEntryType.entries.random(),
+                onChatOpen = openers[4],
+                onAccept = openers[4],
+                onDecline = openers[4],
+                onDeclineAlways = openers[4],
+                onDelete = openers[4],
+                onRequestSend = openers[4],
+                attractAttention = randomBoolean()
+            )
         }
 
         Row {
