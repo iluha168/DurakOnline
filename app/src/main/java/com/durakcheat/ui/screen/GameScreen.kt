@@ -2,7 +2,6 @@ package com.durakcheat.ui.screen
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.animateContentSize
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -27,8 +26,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Build
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -48,7 +45,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.durakcheat.MainActivity
 import com.durakcheat.R
 import com.durakcheat.net.json.DCard
@@ -64,10 +60,10 @@ import com.durakcheat.ui.component.container.columnDialog
 import com.durakcheat.ui.component.container.lazyColumnDialog
 import com.durakcheat.ui.component.highlevel.ButtonHand
 import com.durakcheat.ui.component.highlevel.ButtonHandShare
+import com.durakcheat.ui.component.highlevel.UserGameStatusIndicators
 import com.durakcheat.ui.component.highlevel.playerCardsBreakdown
 import com.durakcheat.ui.component.leaf.ButtonTextOnly
 import com.durakcheat.ui.component.leaf.CardShape
-import com.durakcheat.ui.component.leaf.CashDisplay
 import com.durakcheat.ui.component.leaf.DCardDisplay
 import com.durakcheat.ui.component.leaf.GameRulesRow
 import com.durakcheat.ui.component.leaf.NamedTextCounterRow
@@ -82,7 +78,7 @@ import com.durakcheat.ui.thenIf
 
 val avatarSize = 70.dp
 
-@OptIn(ExperimentalLayoutApi::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun GameScreen(activity: MainActivity){
     val game = activity.client.game ?: return
@@ -259,31 +255,15 @@ fun GameScreen(activity: MainActivity){
                                 }
                             }
                         }
-                        // Status indicators
-                        Column(
-                            modifier = Modifier.animateContentSize(),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            if(playerSocial.ready)
-                                Icon(Icons.Default.Check, stringResource(R.string.is_ready))
-                            if(!game.started)
-                                ThickButton(
-                                    onClick = { game.swap(playerIndex) },
-                                    slim = true, shape = CircleShape,
-                                    color = if(playerSocial.wantsToSwap) MaterialTheme.colorScheme.primary else null,
-                                    content = { Icon(painterResource(R.drawable.swap), stringResource(R.string.to_swap)) },
-                                    modifier = Modifier.width(40.dp)
-                                )
-                            if(playerSocial.disconnected)
-                                Icon(Icons.Default.Build, stringResource(R.string.disconnected))
-                            // Cash won/lost
-                            RememberingAnimatedVisibility(
-                                value = game.players[playerIndex].winAmount,
-                                condition = { game.started && it != 0L },
-                                content = { CashDisplay(it, fontSize = 16.sp) },
-                                delay = 1000
-                            )
-                        }
+                        UserGameStatusIndicators(
+                            isReady = playerSocial.ready,
+                            hasGameStarted = game.started,
+                            hasDisconnected = playerSocial.disconnected,
+                            wantsToSwap = playerSocial.wantsToSwap,
+                            onClickSwap = { game.swap(playerIndex) },
+                            winAmount = game.players[playerIndex].winAmount,
+                            isWinAmountShown = { game.started && it != 0L }
+                        )
                     }
                 }
                 if(!game.started)

@@ -1,6 +1,5 @@
 package com.durakcheat.ui.screen
 
-import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -19,7 +18,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.MailOutline
@@ -53,15 +51,14 @@ import com.durakcheat.net.packet.DFriendListEntryType
 import com.durakcheat.net.packet.DUserInfoPersonal
 import com.durakcheat.net.packet.MutableStateDFriendListEntry
 import com.durakcheat.ui.animatePlacement
-import com.durakcheat.ui.component.container.RememberingAnimatedVisibility
 import com.durakcheat.ui.component.container.Rov
 import com.durakcheat.ui.component.container.TitleText
 import com.durakcheat.ui.component.highlevel.ButtonHand
 import com.durakcheat.ui.component.highlevel.ButtonHandShare
 import com.durakcheat.ui.component.highlevel.ButtonQuickGame
 import com.durakcheat.ui.component.highlevel.ListElementToken
+import com.durakcheat.ui.component.highlevel.UserGameStatusIndicators
 import com.durakcheat.ui.component.leaf.CardShape
-import com.durakcheat.ui.component.leaf.CashDisplay
 import com.durakcheat.ui.component.leaf.DCardDisplay
 import com.durakcheat.ui.component.leaf.NamedTextCounterRow
 import com.durakcheat.ui.component.leaf.TextCounter
@@ -128,6 +125,7 @@ fun PaletteScreen(activity: MainActivity){
             DFriendListEntry(user, DFriendListEntryType.entries.random(), Math.random() > 0.5)
         )
         val trumpSuit = DCardSuit.entries.random()
+        val randomBoolean = { Math.random() > 0.5 }
 
         ButtonQuickGame(maxW, openers[0])
         ListElementToken(openers[4], openers[0], openers[5], user, maxW)
@@ -143,21 +141,16 @@ fun PaletteScreen(activity: MainActivity){
                 }
             }
             ButtonHand(Math.random().times(15.0).toInt(), openers[2])
-            ButtonHandShare(Math.random() > 0.5, openers[4])
-            Column(
-                modifier = Modifier.animateContentSize(),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Icon(Icons.Default.Check, stringResource(R.string.is_ready))
-                Icon(Icons.Default.Build, stringResource(R.string.disconnected))
-                // Cash won/lost
-                RememberingAnimatedVisibility(
-                    value = -100L,
-                    condition = { Math.random() > 0.5 },
-                    content = { CashDisplay(it) },
-                    delay = 1000
-                )
-            }
+            ButtonHandShare(randomBoolean(), openers[4])
+            UserGameStatusIndicators(
+                isReady = randomBoolean(),
+                hasGameStarted = randomBoolean(),
+                hasDisconnected = randomBoolean(),
+                wantsToSwap = randomBoolean(),
+                onClickSwap = openers[4],
+                winAmount = Math.random().times(1000.0).toLong(),
+                isWinAmountShown = { randomBoolean() }
+            )
         }
 
         ThickButton(
