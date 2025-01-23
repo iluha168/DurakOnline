@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -24,7 +23,6 @@ import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.MailOutline
-import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
@@ -59,6 +57,7 @@ import com.durakcheat.ui.component.container.RememberingAnimatedVisibility
 import com.durakcheat.ui.component.container.Rov
 import com.durakcheat.ui.component.container.TitleText
 import com.durakcheat.ui.component.highlevel.ButtonHand
+import com.durakcheat.ui.component.highlevel.ButtonHandShare
 import com.durakcheat.ui.component.highlevel.ButtonQuickGame
 import com.durakcheat.ui.component.highlevel.ListElementToken
 import com.durakcheat.ui.component.leaf.CardShape
@@ -144,12 +143,7 @@ fun PaletteScreen(activity: MainActivity){
                 }
             }
             ButtonHand(Math.random().times(15.0).toInt(), openers[2])
-            ThickButton(
-                onClick = openers[4],
-                content = { Icon(Icons.Default.Share, stringResource(R.string.share_hand)) },
-                slim = true, shape = RoundedCornerShape(10.dp),
-                modifier = Modifier.width(40.dp)
-            )
+            ButtonHandShare(Math.random() > 0.5, openers[4])
             Column(
                 modifier = Modifier.animateContentSize(),
                 horizontalAlignment = Alignment.CenterHorizontally
