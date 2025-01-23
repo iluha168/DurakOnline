@@ -33,7 +33,7 @@ fun ButtonTextOnly(text: String, modifier: Modifier = Modifier, enabled: Boolean
 @Composable
 fun TransparentButtonIcon(img: ImageVector, contentDescription: String?, modifier: Modifier = Modifier, onClick: () -> Unit){
     IconButton(onClick = onClick, modifier = modifier) {
-        Icon(img, contentDescription)
+        Icon(img, contentDescription, tint = MaterialTheme.colorScheme.onSurface)
     }
 }
 
