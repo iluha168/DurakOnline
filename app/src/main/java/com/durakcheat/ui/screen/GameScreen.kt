@@ -65,6 +65,7 @@ import com.durakcheat.ui.component.container.Rov
 import com.durakcheat.ui.component.container.columnDialog
 import com.durakcheat.ui.component.container.lazyColumnDialog
 import com.durakcheat.ui.component.highlevel.ButtonHand
+import com.durakcheat.ui.component.highlevel.playerCardsBreakdown
 import com.durakcheat.ui.component.leaf.ButtonTextOnly
 import com.durakcheat.ui.component.leaf.CardShape
 import com.durakcheat.ui.component.leaf.CashDisplay
@@ -115,13 +116,8 @@ fun GameScreen(activity: MainActivity){
         }
     }
 
-    val cardsOfPlayerDlgOpener = lazyColumnDialog<Int>(title = stringResource(R.string.cards_of_player)) { i ->
-        val cards = game.pos.players[i].cards
-        val knownCards = cards.filterNotNull()
-        stickyHeader { NamedTextCounterRow(R.string.total, cards.size) }
-        stickyHeader { NamedTextCounterRow(R.string.cards_unknown, cards.size - knownCards.size) }
-        stickyHeader { NamedTextCounterRow(R.string.cards_known, knownCards.size) }
-        item { DCardDisplay(cards = knownCards, trumpSuit = trumpSuit) }
+    val cardsOfPlayerDlgOpener = lazyColumnDialog<Int>(title = stringResource(R.string.cards_of_player)) {
+        i -> playerCardsBreakdown(game.pos.players[i].cards, trumpSuit)
     }
 
     val inviteFriendsDlgOpener = columnDialog(title = stringResource(R.string.dlg_title_friend_invite)) {
@@ -462,7 +458,6 @@ fun GameScreen(activity: MainActivity){
         }
         // Bottom action bar
         Rov(Modifier.height(IntrinsicSize.Min)) {
-            Text(game.clientPlayer.mode.name)
             FlowRow(
                 modifier = Modifier.weight(1f),
                 verticalArrangement = Arrangement.Center,
