@@ -3,7 +3,6 @@ package com.durakcheat.engine
 import com.durakcheat.net.json.DCard
 
 sealed class DEMove {
-    data object Err: DEMove()
     data object Wait: DEMove()
     data object Done: DEMove()
     data object Pass: DEMove()

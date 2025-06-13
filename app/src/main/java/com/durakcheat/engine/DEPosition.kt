@@ -1,6 +1,5 @@
 package com.durakcheat.engine
 
-import android.util.Log
 import com.durakcheat.net.json.DCard
 import com.durakcheat.net.json.DCardValue
 import com.durakcheat.net.json.DPlayerMode
@@ -27,7 +26,7 @@ data class DEPosition(
     operator fun List<DCard?>.minus(card: DCard?) = toMutableList().apply {
         if(!remove(card))
             if(!remove(null))
-                Log.println(Log.ERROR, "removeCard", "Failed to remove card $card from " + joinToString())
+                throw Error("Failed to remove card $card from " + joinToString())
     }
 
     fun boardSpaceLeft() = (if(deckDiscardedAmount == 0) 5 else 6) - board.size
@@ -38,12 +37,8 @@ data class DEPosition(
             ((p+1)..players.lastIndex).asSequence() + (0..<p).asSequence()
         ).find { players[it].cards.isNotEmpty() }
 
-    private fun previousPlayer(p: DPlayerPosition) = (
+    fun previousPlayer(p: DPlayerPosition) = (
             ((p-1) downTo 0).asSequence() + (players.lastIndex downTo (p+1)).asSequence()
-        ).find { players[it].cards.isNotEmpty() }
-
-    private fun playerAtOrNext(p: DPlayerPosition) = (
-            (p..players.lastIndex).asSequence() + (0..<p).asSequence()
         ).find { players[it].cards.isNotEmpty() }
 
     fun canSwapMove(p: DPlayerPosition) = info.sw
@@ -54,7 +49,6 @@ data class DEPosition(
     fun applyMoveVirtually(by: DPlayerPosition, move: DEMove): DEPosition {
         val isMe = by == info.position
         val pos = when(move){
-            DEMove.Err -> throw Error("Error move provided")
             DEMove.Wait -> this
             DEMove.Done -> {
                 passOrDoneHelper(by, DPlayerMode.DONE, DPlayerMode.PLACE)
@@ -189,11 +183,14 @@ data class DEPosition(
 
     fun withBoardDiscarded(): DEPosition {
         val boardCards = board.flatMap { listOfNotNull(it.first, it.second) }
-        val futureAttacker = posDefender?.let(::playerAtOrNext)
+        val futureAttacker = posDefender?.let {
+            nextPlayer(it-1) // posDefender if Defender did not already win
+        }
         val futureDefender = futureAttacker?.let(::nextPlayer)
         return copy(
             board = emptyList(),
             deckDiscarded = deckDiscarded + boardCards,
+            deckDiscardedAmount = deckDiscardedAmount + boardCards.size,
             players = players.mapIndexed { i, p ->
                 p.copy(mode = when {
                     i == futureAttacker -> DPlayerMode.PLACE

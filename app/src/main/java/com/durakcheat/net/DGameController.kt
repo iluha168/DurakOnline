@@ -124,7 +124,6 @@ class DGameController(
                 DEMove.Done -> done()
                 DEMove.Pass -> pass()
                 DEMove.Take -> take()
-                DEMove.Err -> throw move as Throwable
                 DEMove.Wait -> {}
             }
         } catch (err: Throwable){
