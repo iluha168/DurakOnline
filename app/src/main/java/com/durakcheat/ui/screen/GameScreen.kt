@@ -82,7 +82,7 @@ val avatarSize = 70.dp
 fun GameScreen(activity: MainActivity){
     val game = activity.client.game ?: return
     val trumpSuit = game.pos.trump.suit
-    val canThrowInAny = game.canThrowInAny()
+    val canThrowInAny = game.pos.canThrowInAny()
     val unseenCardsCache = game.unknownCardCandidates
 
     var handCardSelected by remember { mutableStateOf<DCard?>(null) }
@@ -390,7 +390,7 @@ fun GameScreen(activity: MainActivity){
             for(card in game.myCards.filterNotNull().sorted()){
                 val isCardUseful: Boolean = when(game.myMode) {
                     DPlayerMode.THROW_IN_TAKE, DPlayerMode.PASS, DPlayerMode.PLACE, DPlayerMode.THROW_IN, DPlayerMode.DONE ->
-                        canThrowInAny && game.canThrowIn(card)
+                        canThrowInAny && game.pos.canThrowIn(card)
                     DPlayerMode.BEAT ->
                         game.pos.board.any { it.second == null && card.beats(it.first, trumpSuit) }
                     else -> false

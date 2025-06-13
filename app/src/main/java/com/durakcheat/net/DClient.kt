@@ -267,7 +267,7 @@ class DClient(val activity: MainActivity) {
             )
         }
         onGame(PacketType.PLAYER_THREW_IN){
-            if(pos.rules.ch && !canThrowIn(it.c))
+            if(pos.rules.ch && !pos.canThrowIn(it.c))
                 catchCheatPlace(it.c)
             pos = pos.applyMoveVirtually(it.id,
                 when(pos.players[it.id].mode){
@@ -278,7 +278,7 @@ class DClient(val activity: MainActivity) {
             )
         }
         onGame(PacketType.PLAYER_THREW_IN_TAKE){
-            if(pos.rules.ch && !canThrowIn(it.c))
+            if(pos.rules.ch && !pos.canThrowIn(it.c))
                 catchCheatPlace(it.c)
             pos = pos.applyMoveVirtually(it.id, DEMove.AddTake(it.c))
         }

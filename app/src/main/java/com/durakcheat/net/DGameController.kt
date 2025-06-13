@@ -75,13 +75,6 @@ class DGameController(
     val unknownCardCandidates: MutableList<DCard>
         get() = pos.playersPossibleCards().apply { removeAll(myCards.toSet()) }
 
-    fun canThrowInAny(): Boolean {
-        return pos.boardSpaceLeft() > 0 && pos.defenderCardsRemaining().let { it != null && it > 0 }
-    }
-    fun canThrowIn(card: DCard): Boolean {
-        return pos.board.isEmpty() || pos.board.any { it.first.value == card.value || it.second?.value == card.value }
-    }
-
     fun canSkipAround(card: DCard): Boolean {
         return pos.canSwapMove(myPosition) && pos.board[0].first.value == card.value
     }

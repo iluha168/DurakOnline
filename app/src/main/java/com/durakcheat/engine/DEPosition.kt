@@ -45,6 +45,14 @@ data class DEPosition(
             && board.all { it.second == null }
             && nextPlayer(p)?.let { players[it].cards.size > board.size } == true
 
+    fun canThrowInAny(): Boolean {
+        return boardSpaceLeft() > 0 && defenderCardsRemaining().let { it != null && it > 0 }
+    }
+
+    fun canThrowIn(card: DCard): Boolean {
+        return board.isEmpty() || board.any { it.first.value == card.value || it.second?.value == card.value }
+    }
+
     fun applyMoveVirtually(by: DPlayerPosition, move: DEMove): DEPosition {
         return when(move){
             DEMove.Done -> {

@@ -11,7 +11,7 @@ import org.junit.Test
 
 class TestDEPosition {
     companion object {
-        private val testPosition = DEPosition(
+        val testPosition = DEPosition(
             rules = DGameRules.Impl(
                 ch = false,
                 dr = false,
