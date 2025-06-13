@@ -49,7 +49,6 @@ data class DEPosition(
     fun applyMoveVirtually(by: DPlayerPosition, move: DEMove): DEPosition {
         val isMe = by == info.position
         val pos = when(move){
-            DEMove.Wait -> this
             DEMove.Done -> {
                 passOrDoneHelper(by, DPlayerMode.DONE, DPlayerMode.PLACE)
                     .run {

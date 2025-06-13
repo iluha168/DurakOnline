@@ -124,7 +124,6 @@ class DGameController(
                 DEMove.Done -> done()
                 DEMove.Pass -> pass()
                 DEMove.Take -> take()
-                DEMove.Wait -> {}
             }
         } catch (err: Throwable){
             Log.println(Log.ERROR, "PlayMoveReal", "Cannot play $move:\n${err.stackTraceToString()}")
