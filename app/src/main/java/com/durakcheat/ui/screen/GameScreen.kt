@@ -102,7 +102,7 @@ fun GameScreen(activity: MainActivity){
         onConfirm = { game.surrender() }
     )
     BackHandler {
-        if (game.started && game.clientPlayer.mode != DPlayerMode.WIN)
+        if (game.started && game.myMode != DPlayerMode.WIN)
             surrenderDlgOpener(Unit)
         else {
             game.leave()
@@ -236,7 +236,7 @@ fun GameScreen(activity: MainActivity){
                             val friend = activity.client.friends[playerSocial.user?.id]?.raw
                             if(game.started && friend?.kind == DFriendListEntryType.FRIEND) {
                                 var lastSharedHand by remember { mutableIntStateOf(0) }
-                                val handHash = game.pos.hand.toTypedArray().contentHashCode()
+                                val handHash = game.myCards.toTypedArray().contentHashCode()
                                 ButtonHandShare(lastSharedHand != handHash) {
                                     game.friendShareHand(friend)
                                     lastSharedHand = handHash
@@ -330,8 +330,8 @@ fun GameScreen(activity: MainActivity){
                                 DCardDisplay(card = stack.second, trumpSuit = trumpSuit)
                         }
                     }
-                    if(game.clientPlayer.mode == DPlayerMode.BEAT)
-                        for(card in game.pos.hand.filterNotNull())
+                    if(game.myMode == DPlayerMode.BEAT)
+                        for(card in game.myCards.filterNotNull())
                             if(game.canSkipAround(card))
                                 ThickButton(onClick = { game.passCard(card) }) {
                                     Icon(Icons.Default.Refresh, stringResource(R.string.move_pass_to_next))
@@ -351,10 +351,10 @@ fun GameScreen(activity: MainActivity){
                     ) {
                         // Place suggestion
                         val next = game.nextPlayer
-                        if (game.clientPlayer.mode == DPlayerMode.PLACE && game.pos.board.isEmpty() && next != null) {
-                            val suggestion = game.pos.hand
+                        if (game.myMode == DPlayerMode.PLACE && game.pos.board.isEmpty() && next != null) {
+                            val suggestion = game.myCards
                                 .filter { it?.suit != trumpSuit }
-                                .ifEmpty { game.pos.hand }
+                                .ifEmpty { game.myCards }
                                 .filterNotNull()
                                 .run {
                                     minOfOrNull { it.value }?.let { minVal ->
@@ -387,8 +387,8 @@ fun GameScreen(activity: MainActivity){
                 .verticalScroll(rememberScrollState())
                 .fillMaxWidth(),
         ) {
-            for(card in game.pos.hand.filterNotNull().sorted()){
-                val isCardUseful: Boolean = when(game.clientPlayer.mode) {
+            for(card in game.myCards.filterNotNull().sorted()){
+                val isCardUseful: Boolean = when(game.myMode) {
                     DPlayerMode.THROW_IN_TAKE, DPlayerMode.PASS, DPlayerMode.PLACE, DPlayerMode.THROW_IN, DPlayerMode.DONE ->
                         canThrowInAny && game.canThrowIn(card)
                     DPlayerMode.BEAT ->
@@ -402,7 +402,7 @@ fun GameScreen(activity: MainActivity){
                         .stackableBorder(card == handCardSelected, MaterialTheme.colorScheme.primary, CardShape)
                         .stackableBorder(isCardUseful, MaterialTheme.colorScheme.tertiary, CardShape)
                         .clickable {
-                            when (game.clientPlayer.mode) {
+                            when (game.myMode) {
                                 DPlayerMode.THROW_IN_TAKE, DPlayerMode.PASS, DPlayerMode.PLACE, DPlayerMode.THROW_IN, DPlayerMode.DONE ->
                                     if (isCardUseful) game.playCard(card)
 
@@ -428,7 +428,7 @@ fun GameScreen(activity: MainActivity){
                     if(game.btnReadyOn && !game.players[game.myPosition].ready) {
                         R.string.is_ready to { game.ready() }
                     }
-                    else when(game.clientPlayer.mode){
+                    else when(game.myMode){
                         DPlayerMode.THROW_IN_TAKE ->
                             R.string.move_pass to { game.pass() }
                         DPlayerMode.PLACE ->

@@ -206,7 +206,7 @@ class DClient(val activity: MainActivity) {
                 val secondSmallestTrumpCard = smallestTrumpCard.copy(
                     value = smallestTrumpCard.value.nextUp
                 )
-                if(secondSmallestTrumpCard in clientPlayer.cards)
+                if(secondSmallestTrumpCard in myCards)
                     tmpPos = tmpPos.copy(
                         players = tmpPos.players.with1Affected(tmpPos.posAttacker!!) {
                             copy(cards = cards - null + smallestTrumpCard)
@@ -216,7 +216,7 @@ class DClient(val activity: MainActivity) {
             pos = tmpPos
             // Calculate cards of other players
             if(pos.deckLeft <= 1 && pos.deckDiscardedAmount == pos.deckDiscarded.size) {
-                val otherPlayer = (pos.players.filter { null in it.cards } - clientPlayer).singleOrNull()
+                val otherPlayer = (pos.players.filter { null in it.cards }).singleOrNull()
                 if(otherPlayer != null)
                     pos = pos.copy(
                         players = pos.players.with1Affected({ it == otherPlayer }) {
@@ -224,7 +224,7 @@ class DClient(val activity: MainActivity) {
                         }
                     )
             }
-            if(clientPlayer.mode == DPlayerMode.CONFIRM)
+            if(myMode == DPlayerMode.CONFIRM)
                 confirmTake()
         }
         socket.on(PacketType.FRIEND_LIST_UPDATE){
@@ -250,8 +250,10 @@ class DClient(val activity: MainActivity) {
             myPosition = it.id.toInt()
             saveLastGame()
         }
-        onGame(PacketType.PLAYER_HAND_UPDATE){
-            pos = pos.copy(hand = it.cards)
+        onGame(PacketType.PLAYER_HAND_UPDATE){ newHand ->
+            pos = pos.copy(players = pos.players.with1Affected(myPosition) {
+                copy(cards = newHand.cards)
+            })
         }
         onGame(PacketType.GAME_DECK_DRAW){
             //
@@ -287,7 +289,6 @@ class DClient(val activity: MainActivity) {
         }
         val reverseTfsCallback: DGameController.(DCardNotPositioned) -> Unit = {
             pos = pos.copy(
-                hand = pos.hand + it.c,
                 players = pos.players.with1Affected(myPosition) {
                     copy(cards = cards + it.c)
                 },
@@ -307,7 +308,6 @@ class DClient(val activity: MainActivity) {
         }
         onGame(PacketType.PLAYER_BEAT_CARD_ERROR){
             pos = pos.copy(
-                hand = pos.hand + it.b,
                 players = pos.players.with1Affected(myPosition) {
                     copy(cards = cards + it.b)
                 },

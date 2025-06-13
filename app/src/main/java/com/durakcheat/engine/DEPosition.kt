@@ -9,7 +9,6 @@ import com.durakcheat.net.packet.DGameJoined
 data class DEPosition(
     val info: DGameJoined,
     val players: ArrayList<DEPlayer>,
-    val hand: List<DCard?>,
     val posAttacker: DPlayerPosition?,
     val posDefender: DPlayerPosition?,
     val deckLeft: Int,
@@ -47,8 +46,7 @@ data class DEPosition(
             && nextPlayer(p)?.let { players[it].cards.size > board.size } == true
 
     fun applyMoveVirtually(by: DPlayerPosition, move: DEMove): DEPosition {
-        val isMe = by == info.position
-        val pos = when(move){
+        return when(move){
             DEMove.Done -> {
                 passOrDoneHelper(by, DPlayerMode.DONE, DPlayerMode.PLACE)
                     .run {
@@ -83,7 +81,6 @@ data class DEPosition(
                 val isBeatDone = newBoard.all { it.second != null }
                 copy(
                     board = newBoard,
-                    hand = if(isMe) hand - move.beatWith else hand,
                     players = players.mapIndexed { i, p ->
                         when {
                             i == by -> p.copy(
@@ -101,7 +98,6 @@ data class DEPosition(
                 val card = move.card
                 copy(
                     board = board + (card to null),
-                    hand = if(isMe) hand - card else hand,
                     players = players.mapIndexed { i, p ->
                         when {
                             i == by -> p.copy(cards = p.cards - card, mode = DPlayerMode.THROW_IN)
@@ -117,7 +113,6 @@ data class DEPosition(
                 val futurePosDefender = nextPlayer(by)
                 copy(
                     board = board + (card to null),
-                    hand = if(isMe) hand - card else hand,
                     players = players.mapIndexed { i, p ->
                         when (i) {
                             by -> p.copy(cards = p.cards - card, mode = DPlayerMode.THROW_IN)
@@ -133,7 +128,6 @@ data class DEPosition(
                 val card = move.card
                 copy(
                     board = board + (card to null),
-                    hand = if(isMe) hand - card else hand,
                     players = players.with1Affected(by) {
                         copy(cards = cards - card)
                     }
@@ -143,20 +137,12 @@ data class DEPosition(
                 val card = move.card
                 copy(
                     board = board + (card to null),
-                    hand = if(isMe) hand - card else hand,
                     players = players.with1Affected(by) {
                         copy(cards = cards - card, mode = DPlayerMode.THROW_IN)
                     }
                 )
             }
         }
-        pos.run {
-            val h = hand.size
-            val e = players[info.position].cards.size
-            if (h != e)
-                throw Exception("Missed a hand update: expected $e, have $h")
-        }
-        return pos
     }
 
     fun withBoardTaken(takerPos: DPlayerPosition): DEPosition {
@@ -165,7 +151,6 @@ data class DEPosition(
         val futureDefender = futureAttacker?.let(::nextPlayer)
         return copy(
             board = emptyList(),
-            hand = if(takerPos == info.position) hand + boardCards else hand,
             players = players.mapIndexed { i, p ->
                 when {
                     i == takerPos -> p.copy(mode = DPlayerMode.IDLE, cards = p.cards + boardCards)
@@ -262,7 +247,6 @@ data class DEPosition(
         }
         return copy(
             players = newPlayers,
-            hand = hand + newPlayers[info.position].cards.run { subList(hand.size, size) },
             deckLeft = cardsInDeck,
             trump = if(cardsInDeck > 0) trump else trump.copy(value = DCardValue.EMPTY)
         )

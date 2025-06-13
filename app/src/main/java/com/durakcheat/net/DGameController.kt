@@ -32,7 +32,6 @@ class DGameController(
         players = ArrayList(info.players) {
             DEPosition.DEPlayer()
         },
-        hand = emptyList(),
         posAttacker = null,
         posDefender = null,
         deckLeft = info.deck.size,
@@ -45,6 +44,9 @@ class DGameController(
     var myPosition: Int
         get() = pos.info.position
         set(value){ pos = pos.copy(info = pos.info.copy(position = value)) }
+    val me get() = pos.players[myPosition]
+    val myCards get() = me.cards
+    val myMode get() = me.mode
 
     var started by mutableStateOf(false)
     var btnReadyOn by mutableStateOf(false)
@@ -67,10 +69,9 @@ class DGameController(
         }
     }
 
-    val clientPlayer get() = pos.players[myPosition]
     val nextPlayer get() = pos.nextPlayer(myPosition)?.let { pos.players[it] }
     val unknownCardCandidates: MutableList<DCard>
-        get() = pos.playersPossibleCards().apply { removeAll(pos.hand.toSet()) }
+        get() = pos.playersPossibleCards().apply { removeAll(myCards.toSet()) }
 
     fun canThrowInAny(): Boolean {
         return pos.boardSpaceLeft() > 0 && pos.defenderCardsRemaining().let { it != null && it > 0 }
@@ -90,7 +91,6 @@ class DGameController(
             deckDiscarded = emptyList(),
             deckDiscardedAmount = 0,
             board = emptyList(),
-            hand = emptyList(),
             players = pos.players.map {
                 DEPosition.DEPlayer()
             },
@@ -104,7 +104,7 @@ class DGameController(
     fun friendShareHand(friend: DFriendListEntry){
         client.friendSpecialMessageSend(
             DClient.Companion.SpecialMessageTypes.SHARE_HAND,
-            DMoshi.adapter(DHandUpdate::class.java).toJson(DHandUpdate(pos.hand.filterNotNull())),
+            DMoshi.adapter(DHandUpdate::class.java).toJson(DHandUpdate(myCards.filterNotNull())),
             friend
         )
     }
@@ -113,7 +113,7 @@ class DGameController(
         client.socket.send(PacketType.SMILE, DIdentifier(smile.netTranslation.toLong()))
     }
 
-    fun playMoveReal(move: DEMove){
+    fun applyMoveReally(move: DEMove){
         try {
             when (move) {
                 is DEMove.AddTake -> playCardToTake(move.card)
@@ -131,7 +131,7 @@ class DGameController(
     }
 
     fun playCard(card: DCard){
-        when(pos.players[myPosition].mode){
+        when(myMode){
             DPlayerMode.THROW_IN_TAKE, DPlayerMode.PASS -> playCardToTake(card)
             DPlayerMode.THROW_IN -> playCardThrowIn(card)
             DPlayerMode.PLACE, DPlayerMode.DONE -> placeCard(card)

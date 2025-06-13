@@ -31,7 +31,6 @@ class TestDEPosition {
                 DEPosition.DEPlayer(DPlayerMode.BEAT_DONE),
                 DEPosition.DEPlayer(DPlayerMode.IDLE)
             ),
-            hand = List(6) { null },
             posAttacker = 0,
             posDefender = 1,
             deckLeft = DDeck.DECK24.size - 3*6,
