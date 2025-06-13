@@ -1,5 +1,6 @@
 package com.durakcheat.ui.screen
 
+import android.content.ClipData
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,9 +12,8 @@ import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import com.durakcheat.MainActivity
 import com.durakcheat.R
@@ -29,7 +29,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun ChooseAccountScreen(activity: MainActivity, tokens: MutableList<String>, onChoice: (String) -> Unit){
     val users = remember { mutableStateMapOf<String, DUserInfoPersonal>() }
-    val clipboard = LocalClipboardManager.current
+    val clipboard = LocalClipboard.current.nativeClipboard
     val tokenDeleteDlgOpener = confirmationDialog(
         titleText = R.string.delete_confirm,
         bodyText = stringResource(R.string.dlg_body_token_delete),
@@ -70,7 +70,7 @@ fun ChooseAccountScreen(activity: MainActivity, tokens: MutableList<String>, onC
                     .fillMaxWidth()
                     .animateItem(),
                 onClick = { onChoice(it.key) },
-                onCopy = { clipboard.setText(AnnotatedString(it.key)) },
+                onCopy = { clipboard.setPrimaryClip(ClipData.newPlainText("token", it.key)) },
                 onDelete = { tokenDeleteDlgOpener(it.key) },
                 user = it.value
             )
