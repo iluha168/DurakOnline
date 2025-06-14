@@ -8,7 +8,7 @@ import com.durakcheat.net.json.DPlayerPosition
 
 data class DEPosition(
     val rules: DGameRules,
-    val players: ArrayList<DEPlayer>,
+    val players: List<DEPlayer>,
     val posAttacker: DPlayerPosition?,
     val posDefender: DPlayerPosition?,
     val deckLeft: Int,
@@ -165,15 +165,14 @@ data class DEPosition(
         val futureDefender = futureAttacker?.let(::nextPlayer)
         return copy(
             board = emptyList(),
-            players = players.mapIndexed { i, p ->
-                when {
-                    i == takerPos -> p.copy(mode = DPlayerMode.IDLE, cards = p.cards + boardCards)
+            players = players
+                .with1Affected(takerPos) { copy(cards = cards + boardCards) }
+                .mapIndexed { i, p -> when {
                     i == futureAttacker -> p.copy(mode = DPlayerMode.PLACE)
                     i == futureDefender -> p.copy(mode = DPlayerMode.BEAT_DONE)
                     p.mode == DPlayerMode.WIN -> p
                     else -> p.copy(mode = DPlayerMode.IDLE)
-                }
-            },
+                }},
             posAttacker = futureAttacker,
             posDefender = futureDefender,
         ).withCardsDrawn(posAttacker!!, posDefender!!)

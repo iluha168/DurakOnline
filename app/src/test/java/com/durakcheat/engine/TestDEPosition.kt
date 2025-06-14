@@ -72,4 +72,40 @@ class TestDEPosition {
         for ((pIn, pOut) in sequenceOf(3, 3, 1, 1).withIndex())
             assertEquals(pOut, position.previousPlayer(pIn))
     }
+
+    @Test
+    fun testApplyTake_autoPass() {
+        val position = DEPosition(
+            rules = DGameRules.Impl(deck=DDeck.DECK24, sw=true, ch=false, dr=true, nb=true, fast=true),
+            players = arrayListOf(
+                DEPosition.DEPlayer(DPlayerMode.THROW_IN),
+                DEPosition.DEPlayer(DPlayerMode.BEAT, List(3) { null })
+            ),
+            posAttacker = 0,
+            posDefender = 1,
+            deckLeft = 10,
+            trump = DCard("♠A"),
+            deckDiscarded = listOf("♦Q", "♠J").map(::DCard),
+            deckDiscardedAmount = 2,
+            board = listOf("♦J" to "♦K", "♣J" to "♠10", "♥J" to "♥Q", "♣9" to null, "♥10" to null, "♠9" to null)
+                .map { (a,b) -> DCard(a) to b?.let(::DCard) }
+        )
+        assertEquals(
+            DEPosition(
+                rules = DGameRules.Impl(deck=DDeck.DECK24, sw=true, ch=false, dr=true, nb=true, fast=true),
+                players = arrayListOf(
+                    DEPosition.DEPlayer(DPlayerMode.PLACE),
+                    DEPosition.DEPlayer(DPlayerMode.BEAT_DONE, List(3) { null } + listOf("♦J", "♦K", "♣J", "♠10", "♥J", "♥Q", "♣9", "♥10", "♠9").map(::DCard))
+                ),
+                posAttacker = 0,
+                posDefender = 1,
+                deckLeft = 10,
+                trump = DCard("♠A"),
+                deckDiscarded = listOf("♦Q", "♠J").map(::DCard),
+                deckDiscardedAmount = 2,
+                board = emptyList()
+            ),
+            position.applyMoveVirtually(1, DEMove.Take)
+        )
+    }
 }

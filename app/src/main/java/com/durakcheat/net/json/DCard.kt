@@ -38,6 +38,11 @@ data class DCard(
         return suit.netTranslation + value.netTranslation
     }
 
+    constructor(str: String) : this(
+        DCardSuit.entries.find { it.netTranslation == str[0] } ?: DCardSuit.SPADES,
+        DCardValue.entries.find { it.netTranslation == str.substring(1) } ?: DCardValue.ACE,
+    )
+
     infix fun beats(other: DCard): Boolean {
         return suit == other.suit && value.ordinal > other.value.ordinal
     }
@@ -60,11 +65,5 @@ object DCardAdapter {
     fun toJson(card: DCard) = card.toString()
 
     @FromJson
-    fun fromJson(data: String): DCard {
-        val valueStr = data.slice(1..data.lastIndex)
-        return DCard(
-            DCardSuit.entries.find { it.netTranslation == data[0] } ?: DCardSuit.SPADES,
-            DCardValue.entries.find { it.netTranslation == valueStr } ?: DCardValue.ACE
-        )
-    }
+    fun fromJson(data: String) = DCard(data)
 }

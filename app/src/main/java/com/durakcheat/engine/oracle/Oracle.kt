@@ -3,6 +3,7 @@ package com.durakcheat.engine.oracle
 import com.durakcheat.engine.DEMove
 import com.durakcheat.engine.DEPosition
 import com.durakcheat.net.json.DCard
+import com.durakcheat.net.json.DCardValue
 import com.durakcheat.net.json.DPlayerMode
 import com.durakcheat.net.json.DPlayerPosition
 
@@ -82,7 +83,10 @@ data class Oracle (
         }
         if (depthLeft <= 0) {
             // Perform static evaluation
-            return 2000000000
+            return 1000000000 - player.cards.sumOf {
+                val cardImpact = DCardValue.ACE.ordinal - (it?.value ?: pos.rules.deck.avgCardValue).ordinal
+                cardImpact * (if (it?.suit == pos.trump.suit) -1000 else 1000)
+            }
         }
         // 2 or more players that did not win, continue analysis
 
@@ -106,10 +110,13 @@ data class Oracle (
                     .map { i -> i to movesProphecy(i).joinToString("\n\t") }
                     .joinToString("\n")
             }")
-        return worstPossibleScoreForP - 1
+        return worstPossibleScoreForP
     }
 
     fun bestMoveProphecy(p: DPlayerPosition, depthLeft: Int): Pair<DEMove, Oracle>? {
+        if (Thread.currentThread().isInterrupted)
+            return null
+
         val possibleMoves = movesProphecy(p).iterator()
         if (!possibleMoves.hasNext())
             return null
