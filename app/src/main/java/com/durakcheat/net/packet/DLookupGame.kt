@@ -1,7 +1,7 @@
 package com.durakcheat.net.packet
 
 import com.durakcheat.net.json.DDeck
-import com.durakcheat.net.json.DGameBase
+import com.durakcheat.net.json.DGameInfo
 import com.durakcheat.net.json.DPlayerPosition
 
 class DLookupGame (
@@ -23,7 +23,7 @@ class DLookupGame (
     override val dr: Boolean?,
     override val nb: Boolean,
     override val fast: Boolean
-) : DGameBase
+) : DGameInfo
 
 class DLookupGameList (
     val g: List<DLookupGame>

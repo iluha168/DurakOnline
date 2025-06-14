@@ -122,13 +122,13 @@ class DClient(val activity: MainActivity) {
                 activity.runOnUiThread {
                     activity.nav.navigate("game")
                 }
-            } else if(game!!.pos.info.id != it.id){
+            } else if(game!!.info.id != it.id){
                 game = DGameController(this, it)
             }
             saveLastGame()
         }
         onGame(PacketType.GAME_PUBLISHED) {
-            pos = pos.copy(info = pos.info.copy(password = null))
+            info = info.copy(password = null)
         }
         socket.on(PacketType.ERROR) {
             if(it.code == "not_enough_points")
@@ -201,7 +201,7 @@ class DClient(val activity: MainActivity) {
                 // we can calculate who has the smallest trump card
                 val smallestTrumpCard = DCard(
                     tmpPos.trump.suit,
-                    DCardValue.entries[tmpPos.info.deck.lowestCardValueIndex]
+                    DCardValue.entries[tmpPos.rules.deck.lowestCardValueIndex]
                 )
                 val secondSmallestTrumpCard = smallestTrumpCard.copy(
                     value = smallestTrumpCard.value.nextUp
@@ -267,7 +267,7 @@ class DClient(val activity: MainActivity) {
             )
         }
         onGame(PacketType.PLAYER_THREW_IN){
-            if(pos.info.ch && !canThrowIn(it.c))
+            if(pos.rules.ch && !canThrowIn(it.c))
                 catchCheatPlace(it.c)
             pos = pos.applyMoveVirtually(it.id,
                 when(pos.players[it.id].mode){
@@ -278,12 +278,12 @@ class DClient(val activity: MainActivity) {
             )
         }
         onGame(PacketType.PLAYER_THREW_IN_TAKE){
-            if(pos.info.ch && !canThrowIn(it.c))
+            if(pos.rules.ch && !canThrowIn(it.c))
                 catchCheatPlace(it.c)
             pos = pos.applyMoveVirtually(it.id, DEMove.AddTake(it.c))
         }
         onGame(PacketType.PLAYER_PASS_TURN){
-            if(pos.info.ch && !canSkipAround(it.c))
+            if(pos.rules.ch && !canSkipAround(it.c))
                 catchCheatPlace(it.c)
             pos = pos.applyMoveVirtually(it.id, DEMove.Swap(it.c))
         }
@@ -303,7 +303,7 @@ class DClient(val activity: MainActivity) {
                 board = it.c,
                 beatWith = it.b
             ))
-            if(pos.info.ch && !it.b.beats(it.c, pos.trump.suit))
+            if(pos.rules.ch && !it.b.beats(it.c, pos.trump.suit))
                 catchCheatBeat(it.c, it.b)
         }
         onGame(PacketType.PLAYER_BEAT_CARD_ERROR){
@@ -484,7 +484,7 @@ class DClient(val activity: MainActivity) {
     }
 
     private fun saveLastGame(){
-        lastGame.value = DGameRejoinAble(game!!.myPosition, game!!.pos.info.id, activity.lastConnectedServer.str!!)
+        lastGame.value = DGameRejoinAble(game!!.myPosition, game!!.info.id, activity.lastConnectedServer.str!!)
     }
 
     private fun gameClose(){

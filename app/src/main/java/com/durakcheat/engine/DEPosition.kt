@@ -2,12 +2,12 @@ package com.durakcheat.engine
 
 import com.durakcheat.net.json.DCard
 import com.durakcheat.net.json.DCardValue
+import com.durakcheat.net.json.DGameRules
 import com.durakcheat.net.json.DPlayerMode
 import com.durakcheat.net.json.DPlayerPosition
-import com.durakcheat.net.packet.DGameJoined
 
 data class DEPosition(
-    val info: DGameJoined,
+    val rules: DGameRules,
     val players: ArrayList<DEPlayer>,
     val posAttacker: DPlayerPosition?,
     val posDefender: DPlayerPosition?,
@@ -40,7 +40,7 @@ data class DEPosition(
             ((p-1) downTo 0).asSequence() + (players.lastIndex downTo (p+1)).asSequence()
         ).find { players[it].cards.isNotEmpty() }
 
-    fun canSwapMove(p: DPlayerPosition) = info.sw
+    fun canSwapMove(p: DPlayerPosition) = rules.sw
             && board.isNotEmpty()
             && board.all { it.second == null }
             && nextPlayer(p)?.let { players[it].cards.size > board.size } == true
@@ -188,7 +188,7 @@ data class DEPosition(
         ).withCardsDrawn(posAttacker!!, posDefender!!)
     }
 
-    fun playersPossibleCards() = info.deck.cards()
+    fun playersPossibleCards() = rules.deck.cards()
         .toMutableList()
         .apply {
             removeAll(deckDiscarded.toSet())
@@ -221,7 +221,7 @@ data class DEPosition(
         val newPlayers = ArrayList(players)
         for(p in sequence {
             // Duplicate code, but high performance
-            for(p in previousAttackerPos..<info.players)
+            for(p in previousAttackerPos..<players.size)
                 if(p != previousDefenderPos)
                     yield(p)
             for(p in 0..<previousAttackerPos)
@@ -254,7 +254,7 @@ data class DEPosition(
 
     private fun passOrDoneHelper(by: DPlayerPosition, mode: DPlayerMode, targetMode: DPlayerMode) = copy(
         players = players.run {
-            if(info.nb){
+            if(rules.nb){
                 val afterDefender = posDefender!!.let(::nextPlayer)
                 val beforeDefender = posDefender.let(::previousPlayer)
                 mapIndexed { i, p ->

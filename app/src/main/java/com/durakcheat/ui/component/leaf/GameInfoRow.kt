@@ -5,11 +5,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import com.durakcheat.R
-import com.durakcheat.net.json.DGameBase
+import com.durakcheat.net.json.DGameInfo
 import com.durakcheat.ui.component.container.Rov
 
 @Composable
-fun GameRulesRow(info: DGameBase) {
+fun GameInfoRow(info: DGameInfo) {
     Rov {
         with(info) {
             Icon(painterResource(if(sw) R.drawable.ico_passing else R.drawable.ico_throw), null)

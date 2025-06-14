@@ -35,7 +35,7 @@ import com.durakcheat.ui.component.container.TitleText
 import com.durakcheat.ui.component.container.columnDialog
 import com.durakcheat.ui.component.leaf.ButtonTextOnly
 import com.durakcheat.ui.component.leaf.CashDisplay
-import com.durakcheat.ui.component.leaf.GameRulesRow
+import com.durakcheat.ui.component.leaf.GameInfoRow
 import com.durakcheat.ui.component.leaf.ListSlider
 import com.durakcheat.ui.component.leaf.MultiSelectionRow
 import com.durakcheat.ui.component.leaf.NamedTextCounterRow
@@ -159,7 +159,7 @@ fun SearchTab(activity: MainActivity){
             slim = true,
         ) {
             Column {
-                GameRulesRow(game)
+                GameInfoRow(game)
                 Row {
                     if (game.pr)
                         Icon(painterResource(R.drawable.ico_lock), stringResource(R.string.password_required))

@@ -4,23 +4,17 @@ import com.durakcheat.net.json.DCard
 import com.durakcheat.net.json.DCardSuit
 import com.durakcheat.net.json.DCardValue
 import com.durakcheat.net.json.DDeck
+import com.durakcheat.net.json.DGameRules
 import com.durakcheat.net.json.DPlayerMode
-import com.durakcheat.net.packet.DGameJoined
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class TestDEPosition {
     companion object {
         private val testPosition = DEPosition(
-            info = DGameJoined(
-                id = 0,
-                position = 2,
+            rules = DGameRules.Impl(
                 ch = false,
                 dr = false,
-                password = null,
-                timeout = 0,
-                players = 3,
-                bet = 100L,
                 deck = DDeck.DECK24,
                 sw = true,
                 nb = false,
@@ -66,7 +60,6 @@ class TestDEPosition {
         for ((pIn, pOut) in sequenceOf(2, 0, 1).withIndex())
             assertEquals(pOut, position.previousPlayer(pIn))
         position = position.copy(
-            info = position.info.copy(players = 4),
             players = arrayListOf(
                 DEPosition.DEPlayer(DPlayerMode.WIN, cards = emptyList()),
                 DEPosition.DEPlayer(DPlayerMode.THROW_IN),

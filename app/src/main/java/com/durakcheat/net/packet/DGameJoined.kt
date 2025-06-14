@@ -1,7 +1,7 @@
 package com.durakcheat.net.packet
 
 import com.durakcheat.net.json.DDeck
-import com.durakcheat.net.json.DGameBase
+import com.durakcheat.net.json.DGameInfo
 
 data class DGameJoined (
     val id: Long,
@@ -18,4 +18,4 @@ data class DGameJoined (
     override val dr: Boolean?,
     override val nb: Boolean,
     override val fast: Boolean
-) : DGameBase
+) : DGameInfo

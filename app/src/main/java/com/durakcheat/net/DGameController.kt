@@ -28,7 +28,7 @@ class DGameController(
     info: DGameJoined
 ) {
     var pos: DEPosition by mutableStateOf(DEPosition(
-        info = info,
+        rules = info,
         players = ArrayList(info.players) {
             DEPosition.DEPlayer()
         },
@@ -41,9 +41,11 @@ class DGameController(
         board = emptyList()
     ))
 
+    var info: DGameJoined by mutableStateOf(info)
+
     var myPosition: Int
-        get() = pos.info.position
-        set(value){ pos = pos.copy(info = pos.info.copy(position = value)) }
+        get() = info.position
+        set(value){ info = info.copy(position = value) }
     val me get() = pos.players[myPosition]
     val myCards get() = me.cards
     val myMode get() = me.mode
@@ -87,7 +89,7 @@ class DGameController(
     internal fun reset(){
         started = false
         pos = pos.copy(
-            deckLeft = pos.info.deck.size,
+            deckLeft = pos.rules.deck.size,
             deckDiscarded = emptyList(),
             deckDiscardedAmount = 0,
             board = emptyList(),
@@ -205,7 +207,7 @@ class DGameController(
     }
 
     fun leave(){
-        client.socket.send(PacketType.GAME_LEAVE, DIdentifier(pos.info.id))
+        client.socket.send(PacketType.GAME_LEAVE, DIdentifier(info.id))
         // Rejoin information is only stored when the game has started
         if(!started || players.singleOrNull { it.user != null } != null) {
             // It makes sense to remove lastGame when the only player in the room was the client

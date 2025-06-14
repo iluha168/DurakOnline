@@ -64,7 +64,7 @@ import com.durakcheat.ui.component.highlevel.playerCardsBreakdown
 import com.durakcheat.ui.component.leaf.ButtonTextOnly
 import com.durakcheat.ui.component.leaf.CardShape
 import com.durakcheat.ui.component.leaf.DCardDisplay
-import com.durakcheat.ui.component.leaf.GameRulesRow
+import com.durakcheat.ui.component.leaf.GameInfoRow
 import com.durakcheat.ui.component.leaf.NamedTextCounterRow
 import com.durakcheat.ui.component.leaf.TextCounter
 import com.durakcheat.ui.component.leaf.ThickButton
@@ -165,12 +165,12 @@ fun GameScreen(activity: MainActivity){
 
     val openRoomDlgOpener = confirmationDialog<Unit>(
         titleText = R.string.unlock,
-        bodyText = stringResource(R.string.dlg_body_room_unlock, game.pos.info.password ?: ""),
+        bodyText = stringResource(R.string.dlg_body_room_unlock, game.info.password ?: ""),
         onConfirm = { game.publish() }
     )
 
     Column(Modifier.fillMaxWidth()) {
-        GameRulesRow(game.pos.info)
+        GameInfoRow(game.info)
         Row(modifier = Modifier.weight(1f)) {
             // User avatars column
             Column(
@@ -195,9 +195,9 @@ fun GameScreen(activity: MainActivity){
                                 val timeoutRestarter =
                                     if (game.started || !game.btnReadyOn)
                                         when (player.mode) {
-                                            DPlayerMode.BEAT -> timeoutIndicator(game.pos.info.timeout, MaterialTheme.colorScheme.error)
+                                            DPlayerMode.BEAT -> timeoutIndicator(game.info.timeout, MaterialTheme.colorScheme.error)
                                             DPlayerMode.BEAT_DONE -> timeoutIndicator(MaterialTheme.colorScheme.error)
-                                            DPlayerMode.PLACE, DPlayerMode.THROW_IN_TAKE -> timeoutIndicator(game.pos.info.timeout, MaterialTheme.colorScheme.primary)
+                                            DPlayerMode.PLACE, DPlayerMode.THROW_IN_TAKE -> timeoutIndicator(game.info.timeout, MaterialTheme.colorScheme.primary)
                                             DPlayerMode.THROW_IN -> timeoutIndicator(MaterialTheme.colorScheme.primary)
                                             DPlayerMode.IDLE, DPlayerMode.DONE, DPlayerMode.PASS, DPlayerMode.WIN -> timeoutIndicator(Color.Unspecified)
                                             DPlayerMode.TAKE, DPlayerMode.CONFIRM -> timeoutIndicator(MaterialTheme.colorScheme.tertiary)
@@ -445,7 +445,7 @@ fun GameScreen(activity: MainActivity){
                         actionBtn.second()
                         activity.playSound(R.raw.btn)
                     }
-                if(!game.started && game.pos.info.password != null)
+                if(!game.started && game.info.password != null)
                     ThickButton(onClick = { openRoomDlgOpener(Unit) }) {
                         Icon(painterResource(R.drawable.ico_unlock), null)
                         Text(stringResource(R.string.unlock))
