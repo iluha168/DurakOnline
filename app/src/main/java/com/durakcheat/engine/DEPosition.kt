@@ -53,6 +53,9 @@ data class DEPosition(
         return board.isEmpty() || board.any { it.first.value == card.value || it.second?.value == card.value }
     }
 
+    val amountOfPlayersThatDidNotWin: Int
+        get() = players.count { it.mode != DPlayerMode.WIN }
+
     fun applyMoveVirtually(by: DPlayerPosition, move: DEMove): DEPosition {
         return when(move){
             DEMove.Done -> {
@@ -65,14 +68,10 @@ data class DEPosition(
             }
             DEMove.Pass -> {
                 passOrDoneHelper(by, DPlayerMode.PASS, DPlayerMode.THROW_IN_TAKE)
-                    .run {
-                        if(players.none { it.mode == DPlayerMode.THROW_IN_TAKE })
-                            withBoardTaken(posDefender!!)
-                        else this
-                    }
+                    .withBoardTakenIfNobodyCanThrowInTake()
             }
             DEMove.Take -> {
-                copy(
+                if (canThrowInAny()) copy(
                     players = players.mapIndexed { i, p ->
                         when {
                             i == by -> p.copy(mode = DPlayerMode.TAKE)
@@ -80,7 +79,7 @@ data class DEPosition(
                             else -> p
                         }
                     }
-                )
+                ) else withBoardTaken(by)
             }
             is DEMove.Beat -> {
                 val newBoard = board.with1Affected({ it.first == move.board }) {
@@ -100,7 +99,7 @@ data class DEPosition(
                             else -> p
                         }
                     }
-                )
+                ).withWinIfDeckEmpty(by)
             }
             is DEMove.Place -> {
                 val card = move.card
@@ -109,12 +108,13 @@ data class DEPosition(
                     players = players.mapIndexed { i, p ->
                         when {
                             i == by -> p.copy(cards = p.cards - card, mode = DPlayerMode.THROW_IN)
-                            i == posDefender -> p.copy(mode = DPlayerMode.BEAT)
-                            p.mode == DPlayerMode.DONE -> p.copy(mode = DPlayerMode.THROW_IN)
+                            i == posDefender && p.mode != DPlayerMode.WIN -> p.copy(mode = DPlayerMode.BEAT)
+                            p.mode == DPlayerMode.DONE ||
+                            p.mode == DPlayerMode.IDLE -> p.copy(mode = DPlayerMode.THROW_IN)
                             else -> p
                         }
                     }
-                )
+                ).withWinIfDeckEmpty(by)
             }
             is DEMove.Swap -> {
                 val card = move.card
@@ -125,32 +125,38 @@ data class DEPosition(
                         when (i) {
                             by -> p.copy(cards = p.cards - card, mode = DPlayerMode.THROW_IN)
                             futurePosDefender -> p.copy(mode = DPlayerMode.BEAT)
-                            posAttacker -> p.copy(mode = DPlayerMode.IDLE)
                             else -> p
                         }
                     },
                     posDefender = futurePosDefender,
-                )
+                ).withWinIfDeckEmpty(by)
             }
-            is DEMove.AddTake -> {
-                val card = move.card
-                copy(
-                    board = board + (card to null),
-                    players = players.with1Affected(by) {
-                        copy(cards = cards - card)
-                    }
-                )
-            }
-            is DEMove.ThrowIn -> {
-                val card = move.card
-                copy(
-                    board = board + (card to null),
-                    players = players.with1Affected(by) {
-                        copy(cards = cards - card, mode = DPlayerMode.THROW_IN)
-                    }
-                )
-            }
+            is DEMove.AddTake -> withCardThrownIn(by, move.card)
+                .withBoardTakenIfNobodyCanThrowInTake()
+            is DEMove.ThrowIn -> withCardThrownIn(by, move.card)
+                .run {
+                    if(players.none { it.mode == DPlayerMode.THROW_IN })
+                        withBoardDiscarded()
+                    else this
+                }
         }
+    }
+
+    private fun withWinIfDeckEmpty(p: DPlayerPosition): DEPosition {
+        return if (deckLeft <= 0 && players[p].cards.isEmpty()) copy(
+            players = players.with1Affected(p) {
+                copy(mode = DPlayerMode.WIN)
+            }
+        ) else this
+    }
+
+    private fun withCardThrownIn(by: DPlayerPosition, card: DCard): DEPosition {
+        return copy(
+            board = board + (card to null),
+            players = players.with1Affected(by) {
+                copy(cards = cards - card)
+            }
+        ).withWinIfDeckEmpty(by)
     }
 
     fun withBoardTaken(takerPos: DPlayerPosition): DEPosition {
@@ -171,6 +177,12 @@ data class DEPosition(
             posAttacker = futureAttacker,
             posDefender = futureDefender,
         ).withCardsDrawn(posAttacker!!, posDefender!!)
+    }
+
+    private fun withBoardTakenIfNobodyCanThrowInTake(): DEPosition {
+        return if(players.none { it.mode == DPlayerMode.THROW_IN_TAKE })
+            withBoardTaken(posDefender!!)
+        else this
     }
 
     fun withBoardDiscarded(): DEPosition {
@@ -237,20 +249,23 @@ data class DEPosition(
                     yield(p)
             yield(previousDefenderPos)
         }) {
-            val amount = (6 - newPlayers[p].cards.size).coerceIn(0, cardsInDeck)
+            val amountToDraw = (6 - newPlayers[p].cards.size).coerceIn(0, cardsInDeck)
             newPlayers[p] = newPlayers[p].copy(
-                cards = newPlayers[p].cards + List(amount){ null }
+                cards = newPlayers[p].cards + List(amountToDraw){ null }
             )
-            cardsInDeck -= amount
-            if(cardsInDeck <= 0){
-                newPlayers[p] =
-                    if(amount <= 0)
-                        newPlayers[p].copy(mode = DPlayerMode.WIN)
-                    else newPlayers[p].copy(
-                        cards = newPlayers[p].cards.toMutableList().apply {
-                            this[lastIndex] = trump
-                        }
+            cardsInDeck -= amountToDraw
+            if(cardsInDeck > 0) continue
+            if(newPlayers[p].cards.isEmpty()) {
+                newPlayers[p] = newPlayers[p].copy(mode = DPlayerMode.WIN)
+                continue
+            }
+            if (amountToDraw > 0) {
+                newPlayers[p] = newPlayers[p].copy(
+                    cards = newPlayers[p].cards.toMutableList().apply {
+                        this[lastIndex] = trump
+                    }
                 )
+                continue
             }
         }
         return copy(
